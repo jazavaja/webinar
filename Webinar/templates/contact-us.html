@@ -1,0 +1,49 @@
+{%  extends 'home.html' %}
+{% block title %}Contact Us{% endblock %}
+{% block extra_css %}
+    {% load static %}
+<link rel="stylesheet" href="{% static 'css/contact-us.css' %}">
+{% endblock %}
+{% block content %}
+<main>
+<div class="card">
+    {% if success %}
+        <p class="success" style="color: green;">Your message has been sent successfully.</p>
+    {% endif %}
+<h1>Contact Us</h1>
+
+
+<form method="post">
+    {% csrf_token %}
+<div>
+<label for="name">Full Name</label>
+<input id="name" type="text" name="name" required />
+</div>
+
+
+<div>
+    {% if logged %}
+    {% else %}
+        <label for="email">Email Address</label>
+        <input id="email" type="email" name="email" required />
+    {% endif %}
+</div>
+
+
+<div>
+<label for="subject">Subject</label>
+<input id="subject" type="text" name="subject" required />
+</div>
+
+
+<div>
+<label for="message">Message</label>
+<textarea id="message" name="message" required></textarea>
+</div>
+
+
+<button type="submit">Send Message</button>
+</form>
+</div>
+</main>
+{% endblock %}

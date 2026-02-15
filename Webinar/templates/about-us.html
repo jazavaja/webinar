@@ -1,0 +1,77 @@
+{% extends 'home.html' %}
+{% block title %}About Us{% endblock %}
+{% block content %}
+  <main class="about">
+    <section class="hero">
+        <div>
+            <h1>
+                Building. Learning.
+                <span style="color: var(--accent)">Iterating.</span>
+            </h1>
+            <p>
+                I’m <strong>Sahand</strong>, a 13-year-old developer from Canada.
+                I focus on learning by building real projects — mostly with Django
+                and experimental chess engines.
+            </p>
+            <p>
+                I care about understanding how things work under the hood,
+                not just making them look finished.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Current Focus</h3>
+            <ul style="margin-top: 1rem; color: var(--muted)">
+                <li>Backend development with Django</li>
+                <li>Chess engine fundamentals (search & evaluation)</li>
+                <li>Clean, maintainable project structure</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2>What I'm Working On</h2>
+        <div class="product-grid">
+            <div class="card">
+                <h3>Django Projects</h3>
+                <p style="color: var(--muted)">
+                    Small but real web apps focused on correctness,
+                    structure, and learning best practices.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Chess Engine Experiments</h3>
+                <p style="color: var(--muted)">
+                    Exploring minimax, basic evaluation functions,
+                    and improving move selection step by step.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Learning Projects</h3>
+                <p style="color: var(--muted)">
+                    Focused experiments to understand concepts
+                    before scaling them into larger systems.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2>Find Me</h2>
+        <div class="card">
+            <p style="color: var(--muted)">
+                Code and experiments live on GitHub.
+            </p>
+            <p>
+                <a href="https://github.com/Sahand294"
+                   class="btn btn-primary"
+                   target="_blank">
+                    github.com/Sahand294
+                </a>
+            </p>
+        </div>
+    </section>
+</main>
+{% endblock %}

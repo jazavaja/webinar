@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header>
+    <div class="nav-container">
+        <div class="logo">{{ site_name }}</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Account</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Webinars</a>
+        </nav>
+    </div>
+</header>
+{% block content %}
+<section class="hero">
+    <div>
+        <h1>Webinars</h1>
+        <p>
+            Webinar events that you can sign up for or create your own webinars
+        </p>
+        <a href="#products" class="btn btn-primary">Shop Now</a>
+        <a href="#" class="btn btn-outline">View Cart</a>
+    </div>
+
+</section>
+
+{% endblock %}
+<footer>
+    <p>© 2026 Webinar.</p>
+</footer>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

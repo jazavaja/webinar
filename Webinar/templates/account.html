@@ -1,0 +1,183 @@
+{% extends 'home.html' %}
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+{% endblock %}
+{% block content %}
+
+
+    <div class="profile-container">
+
+        <!-- User properties -->
+        <div class="card">
+            <h1>Profile</h1>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <input type="hidden" name="type" value="logout">
+                <button type="submit">Logout</button>
+            </form>
+            <ul class="property-list">
+                <li><span class="property-name">Username</span><span class="property-value">{{ user.username }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="username">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+
+
+                <li><span class="property-name">First name</span><span
+                        class="property-value">{{ user.first_name }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="first_name">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+                <li><span class="property-name">Last name</span><span class="property-value">{{ user.last_name }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="last_name">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+                <li><span class="property-name">Age</span><span class="property-value">{{ user.age }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="age">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+                <li><span class="property-name">Gender</span><span class="property-value">{{ user.gender }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="gender">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+                <li><span class="property-name">Email</span><span class="property-value">{{ user.email }}</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="email">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+                <li><span class="property-name">Password</span><span class="property-value password">......</span>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="field" value="password">
+                        <input type="hidden" name="type" value="property">
+                        <button type="submit">Change</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- Orders -->
+        <div class="card">
+            <h2>events</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>event ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="orders-body">
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ webinar.id }}</td>
+                        <td>{{ webinar.created_at }}</td>
+                        <td>${{ order.total_price }}</td>
+                        <td><a href="#" class="view-btn">View</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div id="pagination" class="pagination">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const rowsPerPage = 5;
+            const pagesPerGroup = 4;
+
+            const tableBody = document.getElementById('orders-body');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            const pagination = document.getElementById('pagination');
+
+            let currentPage = 1;
+            let currentGroup = 1;
+
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            const totalGroups = Math.ceil(totalPages / pagesPerGroup);
+
+            function showPage(page) {
+                currentPage = page;
+
+                rows.forEach((row, index) => {
+                    const start = (page - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
+
+                renderPagination();
+            }
+
+            function renderPagination() {
+                pagination.innerHTML = '';
+
+                if (currentGroup > 1) {
+                    const prev = document.createElement('button');
+                    prev.textContent = '«';
+                    prev.onclick = () => {
+                        currentGroup--;
+                        showPage((currentGroup - 1) * pagesPerGroup + 1);
+                    };
+                    pagination.appendChild(prev);
+                }
+
+                const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+                const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+
+                    if (i === currentPage) btn.disabled = true;
+
+                    btn.onclick = () => showPage(i);
+                    pagination.appendChild(btn);
+                }
+
+                if (currentGroup < totalGroups) {
+                    const next = document.createElement('button');
+                    next.textContent = '»';
+                    next.onclick = () => {
+                        currentGroup++;
+                        showPage((currentGroup - 1) * pagesPerGroup + 1);
+                    };
+                    pagination.appendChild(next);
+                }
+            }
+
+            showPage(1);
+        });
+    </script>
+
+
+{% endblock %}

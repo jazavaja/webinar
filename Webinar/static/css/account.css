@@ -1,0 +1,168 @@
+
+:root {
+    --bg: #020617;
+    --card: #020617;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #38bdf8;
+    --border: #1f2937;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px;
+}
+
+.profile-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+h1 {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+}
+
+h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+}
+
+/* Profile properties */
+.property-list {
+    list-style: none;
+}
+
+.property-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.property-list li:last-child {
+    border-bottom: none;
+}
+
+.property-name {
+    color: var(--muted);
+}
+
+.property-value {
+    font-weight: 500;
+}
+
+.password {
+    letter-spacing: 3px;
+}
+
+/* Orders table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+thead {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+th, td {
+    text-align: left;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+th {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+tbody tr:hover {
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.delivered {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.shipped {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.processing {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+}
+
+.cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.view-btn {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.pagination a {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.pagination a.active {
+    background: var(--accent);
+    color: #020617;
+    border-color: var(--accent);
+}
+
+.pagination a:hover {
+    border-color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}

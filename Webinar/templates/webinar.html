@@ -1,0 +1,20 @@
+{% extends 'home.html' %}
+{% block title %}Webinar{% endblock %}
+
+{% block content %}
+<section class="products" id="products">
+    <h2>Webinars</h2>
+    <div class="product-grid">
+        {% for Webinar in webinars %}
+        <div class="card product-card">
+            <h3>{{Webinar.name}}</h3>
+            <p class="price">${{Webinar.price}}</p>
+            <p>{{Webinar.description}}</p>
+            <button>sign up</button>
+        </div>
+        {% empty %}
+        <p>No webinars available.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
