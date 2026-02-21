@@ -6,4 +6,9 @@ def home(request):
 
 def webinar(request):
     w = Webinar.objects.all()
+    spe = []
+    sp = Webinar.objects.all()
+    
+    sli = []
+    sl = Webinar.objects.all()
     return render(request, 'webinar.html', {'webinars':w})

@@ -1,10 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home.html' %}
+{% block title %}Webinar{% endblock %}
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/webinar_detail.css' %}">
+{% endblock %}
+{% block content %}
 
-</body>
-</html>
+<style>
+:root {
+    --bg: #020617;
+    --card: #020617;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #38bdf8;
+    --border: #1f2937;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#020617,#0f172a);
+    color: var(--text);
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+/* PRODUCT LAYOUT */
+.product-layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:start;
+}
+
+/* IMAGE AREA */
+.product-image{
+    width:100%;
+    height:420px;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--border);
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* DETAILS */
+.product-details{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.product-title{
+    font-size:2rem;
+    font-weight:700;
+}
+
+.product-price{
+    font-size:1.6rem;
+    color:var(--accent);
+    font-weight:700;
+}
+
+.stock{
+    font-size:1rem;
+    color:var(--muted);
+}
+
+/* QUANTITY */
+.quantity-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.quantity-row input{
+    width:70px;
+    padding:8px;
+    border-radius:8px;
+    border:none;
+    font-size:1rem;
+}
+
+.add-btn{
+    padding:14px 18px;
+    border-radius:10px;
+    border:none;
+    background:var(--accent);
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* DESCRIPTION AREA */
+.description-section{
+    margin-top:40px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px;
+}
+
+.description-title{
+    font-size:1.4rem;
+    margin-bottom:12px;
+}
+
+.description-content{
+    font-size:1rem;
+    line-height:1.7;
+    color:var(--muted);
+    min-height:200px; /* good room but not huge */
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .product-layout{
+        grid-template-columns:1fr;
+    }
+
+    .product-image{
+        height:320px;
+    }
+}
+</style>
+
+<div class="container">
+
+    <div class="product-layout">
+
+        <!-- IMAGE -->
+        <div class="product-image">
+            <img src="{{ webinar.image.url }}" alt="product">
+        </div>
+
+        <!-- DETAILS -->
+        <div class="product-details">
+
+            <div class="product-title">{{ webinar.name }}</div>
+
+            <div class="product-price">${{ webinar.price }}</div>
+
+            <div class="stock">tickets left: {{ webinar.stock }}</div>
+            <button class="add-btn" id="addBtn">buy ticket</button>
+
+        </div>
+
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="description-section">
+        <div class="description-title">Description</div>
+        <div class="description-content">
+            {{ product.description }}
+        </div>
+    </div>
+
+</div>
+
+<script>
+const btn = document.getElementById("addBtn");
+btn.addEventListener("click",()=>{
+    btn.innerText = "Added ✔";
+    setTimeout(()=>{
+        btn.innerText = "Add To Cart";
+    },1000);
+});
+</script>
+
+
+{% endblock %}

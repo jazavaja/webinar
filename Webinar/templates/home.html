@@ -6,19 +6,20 @@
     <title>{% block title %}{{ site_name }}{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 <header>
     <div class="nav-container">
-        <div class="logo">{{ site_name }}</div>
+        <div class="logo">{{ webinar.title }}</div>
         <nav>
-            <a href="#">Home</a>
+            <a href="{% url 'home' %}">Home</a>
             <a href="#">Account</a>
             <a href="#">About Us</a>
             <a href="#">Contact Us</a>
-            <a href="#">Webinars</a>
+            <a href="{% url 'webinar' %}">Webinars</a>
         </nav>
     </div>
 </header>
@@ -29,16 +30,80 @@
         <p>
             Webinar events that you can sign up for or create your own webinars
         </p>
-        <a href="#products" class="btn btn-primary">Shop Now</a>
-        <a href="#" class="btn btn-outline">View Cart</a>
+    </div>
+<!-- ================= IMAGE SLIDER (HOME PAGE) ================= -->
+<!-- Put this inside your homepage where you want the slider to appear -->
+<div class="home-slider">
+    <div class="slider-track" id="sliderTrack">
+        <div class="slide">
+            {% load static %}
+            <img src="{% static 'img/slider1.png' %}" alt="Slide 1">
+            <div class="slide-overlay"><h2>New Arrivals</h2></div>
+        </div>
+        <div class="slide">
+            {% load static %}
+            <img src="{% static 'img/slider2.png' %}" alt="Slide 2">
+            <div class="slide-overlay"><h2>Best Sellers</h2></div>
+        </div>
+        <div class="slide">
+            {% load static %}
+            <img src="{% static 'img/slider3.png' %}" alt="Slide 3">
+            <div class="slide-overlay"><h2>Limited Deals</h2></div>
+        </div>
     </div>
 
-</section>
+    <button class="slider-btn prev" onclick="prevSlide()">❮</button>
+    <button class="slider-btn next" onclick="nextSlide()">❯</button>
+
+    <div class="slider-dots" id="dots"></div>
+</div>
+
 
 {% endblock %}
 <footer>
     <p>© 2026 Webinar.</p>
 </footer>
-{% block extra_js %}{% endblock %}
+<script>
+let index = 0;
+const track = document.getElementById("sliderTrack");
+const slides = document.querySelectorAll(".slide");
+const dotsContainer = document.getElementById("dots");
+
+// Create dots
+slides.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+});
+const dots = document.querySelectorAll(".dot");
+
+function updateSlider(){
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach(d => d.classList.remove("active"));
+    dots[index].classList.add("active");
+}
+
+function nextSlide(){
+    index = (index + 1) % slides.length;
+    updateSlider();
+}
+
+function prevSlide(){
+    index = (index - 1 + slides.length) % slides.length;
+    updateSlider();
+}
+
+function goToSlide(i){
+    index = i;
+    updateSlider();
+}
+
+// Auto slide every 5 seconds
+setInterval(nextSlide, 5000);
+updateSlider();
+</script>
+{% block extra_js %}
+{% endblock %}
 </body>
 </html>
