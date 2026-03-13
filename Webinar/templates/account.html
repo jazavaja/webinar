@@ -1,183 +1,156 @@
 {% extends 'home.html' %}
 {% block extra_css %}
     {% load static %}
+
     <link rel="stylesheet" href="{% static 'css/account.css' %}">
 {% endblock %}
+
 {% block content %}
 
+    <div class="main">
 
-    <div class="profile-container">
+        <!-- PROFILE SECTION -->
+        <div class="card profile-card">
+            <h2>Account Settings</h2>
 
-        <!-- User properties -->
-        <div class="card">
-            <h1>Profile</h1>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post">
                 {% csrf_token %}
-                <input type="hidden" name="type" value="logout">
+                <label>Logout</label>
+                <input type="hidden" name="logout" value="yep">
                 <button type="submit">Logout</button>
             </form>
-            <ul class="property-list">
-                <li><span class="property-name">Username</span><span class="property-value">{{ user.username }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="username">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
+            <form method="post">
+                {% csrf_token %}
+                <label>id</label>
+                <h4>{{ user.id }}</h4>
 
+                <label>Username</label>
+                <input type="text" name="username" value="{{ user.username }}">
 
-                <li><span class="property-name">First name</span><span
-                        class="property-value">{{ user.first_name }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="first_name">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-                <li><span class="property-name">Last name</span><span class="property-value">{{ user.last_name }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="last_name">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-                <li><span class="property-name">Age</span><span class="property-value">{{ user.age }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="age">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-                <li><span class="property-name">Gender</span><span class="property-value">{{ user.gender }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="gender">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-                <li><span class="property-name">Email</span><span class="property-value">{{ user.email }}</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="email">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-                <li><span class="property-name">Password</span><span class="property-value password">......</span>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="field" value="password">
-                        <input type="hidden" name="type" value="property">
-                        <button type="submit">Change</button>
-                    </form>
-                </li>
-            </ul>
+                <label>First Name</label>
+                <input type="text" name="first_name" value="{{ user.first_name }}">
+
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="{{ user.last_name }}">
+
+                <label>New Password</label>
+                <input type="password" name="password">
+
+                <button type="submit">Update Profile</button>
+            </form>
         </div>
 
+        <!-- EVENTS SECTION -->
+        <div class="card events-wrapper">
+            <h2>Your Events</h2>
 
-        <!-- Orders -->
-        <div class="card">
-            <h2>events</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>event ID</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody id="orders-body">
-                {% for order in orders %}
-                    <tr>
-                        <td>#{{ webinar.id }}</td>
-                        <td>{{ webinar.created_at }}</td>
-                        <td>${{ order.total_price }}</td>
-                        <td><a href="#" class="view-btn">View</a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('your', this)">Your Webinars</button>
+                <button class="tab-btn" onclick="switchTab('other', this)">Other Webinars</button>
+            </div>
 
-            <div id="pagination" class="pagination">
+            <div class="table-container">
+                <div id="your-section">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Price</th>
+                            <th>Tickets Left</th>
+                            <a href="{% url 'add_webinar' %}">{% csrf_token %}
+                                <button type="submit">+</button>
+                            </a>
+                        </tr>
+                        </thead>
+                        <tbody id="your-body">
+                        {% for webinar in your_webinars %}
+                            <tr onclick="window.location.href='{% url 'webinar_detail' webinar.id %}'">
+                                <td>#{{ webinar.id }}</td>
+                                <td>{{ webinar.name }}</td>
+                                <td>{{ webinar.created_at }}</td>
+                                <td>${{ webinar.price }}</td>
+                                <td>{{ webinar.stock }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div id="your-pagination" class="pagination"></div>
+                </div>
+
+                <div id="other-section" style="display:none;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Price</th>
+                            <th>Tickets Left</th>
+                        </tr>
+                        </thead>
+                        <tbody id="other-body">
+                        {% for webinar in other_webinars %}
+                            <tr onclick="window.location.href='{% url 'webinar_detail' webinar.id %}'">
+                                <td>#{{ webinar.id }}</td>
+                                <td>{{ webinar.name }}</td>
+                                <td>{{ webinar.created_at }}</td>
+                                <td>${{ webinar.price }}</td>
+                                <td>{{ webinar.stock }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div id="other-pagination" class="pagination"></div>
+                </div>
             </div>
         </div>
+
     </div>
 {% endblock %}
 {% block extra_js %}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function switchTab(tab, btn) {
+            document.getElementById('your-section').style.display = tab === 'your' ? 'block' : 'none';
+            document.getElementById('other-section').style.display = tab === 'other' ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
 
-            const rowsPerPage = 5;
-            const pagesPerGroup = 4;
-
-            const tableBody = document.getElementById('orders-body');
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            const pagination = document.getElementById('pagination');
+        function paginate(bodyId, paginationId) {
+            const rowsPerPage = 3;
+            const body = document.getElementById(bodyId);
+            const rows = Array.from(body.querySelectorAll('tr'));
+            const pagination = document.getElementById(paginationId);
 
             let currentPage = 1;
-            let currentGroup = 1;
-
             const totalPages = Math.ceil(rows.length / rowsPerPage);
-            const totalGroups = Math.ceil(totalPages / pagesPerGroup);
 
             function showPage(page) {
                 currentPage = page;
-
                 rows.forEach((row, index) => {
-                    const start = (page - 1) * rowsPerPage;
-                    const end = start + rowsPerPage;
-                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                    row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? '' : 'none';
                 });
-
                 renderPagination();
             }
 
             function renderPagination() {
                 pagination.innerHTML = '';
-
-                if (currentGroup > 1) {
-                    const prev = document.createElement('button');
-                    prev.textContent = '«';
-                    prev.onclick = () => {
-                        currentGroup--;
-                        showPage((currentGroup - 1) * pagesPerGroup + 1);
-                    };
-                    pagination.appendChild(prev);
-                }
-
-                const startPage = (currentGroup - 1) * pagesPerGroup + 1;
-                const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
-
-                for (let i = startPage; i <= endPage; i++) {
+                for (let i = 1; i <= totalPages; i++) {
                     const btn = document.createElement('button');
                     btn.textContent = i;
-
-                    if (i === currentPage) btn.disabled = true;
-
+                    if (i === currentPage) btn.classList.add('active');
                     btn.onclick = () => showPage(i);
                     pagination.appendChild(btn);
                 }
-
-                if (currentGroup < totalGroups) {
-                    const next = document.createElement('button');
-                    next.textContent = '»';
-                    next.onclick = () => {
-                        currentGroup++;
-                        showPage((currentGroup - 1) * pagesPerGroup + 1);
-                    };
-                    pagination.appendChild(next);
-                }
             }
 
-            showPage(1);
-        });
-    </script>
+            if (rows.length > 0) showPage(1);
+        }
 
+        paginate('your-body', 'your-pagination');
+        paginate('other-body', 'other-pagination');
+    </script>
 
 {% endblock %}

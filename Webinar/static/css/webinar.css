@@ -1,142 +1,149 @@
 
 body {
-    background-color: #121212;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    font-family: Arial;
+    background: #0b1220;
+    color: #e6ecff
 }
 
-h2 {
-    margin: 20px 0;
-    text-align: center;
-}
-
-section {
-    padding: 20px;
-}
-
-.product-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-}
-
-.product-card {
-    background-color: #1e1e1e;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-    width: 220px;
-    margin: 0 8px;
-    cursor: pointer;
-}
-
-.product-card img {
-    width: 100%;
-    display: block;
-}
-
-.product-info {
-    padding: 16px;
-    text-align: center;
-}
-
-.product-title {
-    font-size: 1.2em;
-    margin: 0 0 8px 0;
-}
-
-.product-price {
-    font-size: 1em;
-    color: #ff6600;
-    margin: 0;
-}
-
-/* Slider styles */
-.slider-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-.product-slider {
-    display: flex;
-    gap: 16px;
-    padding: 20px 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-}
-
-.product-slider::-webkit-scrollbar {
-    display: none;
-}
-
-.prev-btn, .next-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    border: none;
-    color: #ffffff;
-    font-size: 24px;
-    padding: 12px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.prev-btn {
-    left: 0;
-}
-
-.next-btn {
-    right: 0;
-}
-
-.slider-container .product-card {
-    flex: 0 0 auto;
-    margin: 0 8px;
-    scroll-snap-align: start;
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
+header {
+    background: #0a0f1c;
+    position: sticky;
     top: 0;
-    left: 0;
+    padding: 16px 40px;
+    display: flex;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+    /*backdrop-filter: blur(10px);*/
+    border-bottom: 1px solid var(--border);
+}
+
+.section {
+    padding: 40px
+}
+
+.section h2 {
+    color: #8fb3ff;
+    margin-bottom: 20px
+}
+
+.grid {
+    display: grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit
+}
+
+.card {
+    background: #121d38;
+    border-radius: 12px;
+    padding: 15px;
+    transition: .25s;
+    border: 1px solid #1f2e55
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .4)
+}
+
+.card img {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-
-.modal-content {
-    background-color: #1e1e1e;
     border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    text-align: center;
-    position: relative;
+    margin-bottom: 10px
 }
 
-.modal-content img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-    border-radius: 4px;
+.price {
+    color: #7cffb6;
+    font-weight: bold
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 28px;
-    color: #ffffff;
-    cursor: pointer;
+.seats {
+    font-size: 13px;
+    color: #9bb3ff
+}
+
+/* Slider container */
+.slider-wrapper{
+    position:relative;
+    padding:0 60px; /* space for buttons so they never cover cards */
+}
+
+/* Slider track */
+.slider{
+    display:flex;
+    gap:20px;
+    overflow:hidden;
+    scroll-behavior:smooth;
+}
+
+/* Webinar cards inside slider */
+.slide-card{
+    min-width:260px;
+    background:#121d38;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #1f2e55;
+}
+
+.slide-card img{
+    width:100%;
+    border-radius:8px;
+    margin-bottom:10px;
+}
+
+/* Slider buttons */
+.slider-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:#1b2a52;
+    border:none;
+    color:#fff;
+    font-size:20px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    z-index:2;
+}
+
+/* Button positions */
+.prev{
+    left:10px;
+}
+
+.next{
+    right:10px;
+}
+
+.next {
+    right: -10px
+}
+
+.special-badge {
+    background: #3b6cff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-left: 8px
+}
+
+.buy-btn {
+    margin-top: 10px;
+    background: #3b6cff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer
+}
+
+
+.buy-btn:hover {
+    background: #5a83ff
 }

@@ -1,159 +1,81 @@
 {% extends 'home.html' %}
 {% block extra_css %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/webinar.css' %}">
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/webinar.css' %}">
 {% endblock %}
 {% block content %}
-<section id="special-products">
-    <h2>Special Products</h2>
-    <div class="product-grid">
-        {% for webinar in special_webinars %}
-        <div class="product-card special" data-index="{{ forloop.counter0 }}">
-            <img src="{{ webinar.image.url }}" alt="{{ webinar.title }}">
-            <div class="product-info">
-                <h3 class="product-title">{{ webinar.title }}</h3>
-                <p class="product-price">{{ webinar.price }}</p>
-                <p class="product-price">tickets left: {{ webinar.stock }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</section>
 
-<section id="sliding-products">
-    <h2>Sliding Products</h2>
-    <div class="slider-container">
-        <button class="prev-btn">&#9664;</button>
-        {% for webinar in slide_webinars %}
 
-            <div class="product-slider">
-                <div class="product-card">
-                    <img src="{{ webinar.image.url }}" alt="{{ webinar.title }}">
-                    <div class="product-info">
-                        <h3 class="product-title">{{ webinar.title }}</h3>
-                        <p class="product-price">{{ webinar.price }}</p>
-                        <p class="product-price">tickets left: {{ webinar.stock }}</p>
-                    </div>
-                </div>
+<section class="section">
+<h2>Special Webinars</h2>
+<div class="grid">
+{% for webinar in special_webinars %}
+<a class="card-link" href="{% url 'webinar_detail' webinar.id %}">
+<div class="card">
+<img src="{{webinar.image.url}}">
+<h3>{{webinar.name}} <span class="special-badge">SPECIAL</span></h3>
+<div class="price">${{webinar.price}}</div>
+<div class="seats">Seats left: {{webinar.stock}}</div>
 
-            </div>
-        {% endfor %}
-        <button class="next-btn">&#9654;</button>
-    </div>
-</section>
-
-<section id="normal-products">
-    <h2>All Products</h2>
-    <div class="product-grid">
-        {% for webinar in webinars %}
-            <a href="{% url 'webinar_detail' webinar.id %}" class="product-card">
-                <img src="{{ webinar.image.url }}" alt="{{ webinar.title }}">
-                <div class="product-info">
-                    <h3 class="product-title">{{ webinar.title }}</h3>
-                    <p class="product-price">{{ webinar.price }}</p>
-                    <p class="product-price">tickets left: {{ webinar.stock }}</p>
-                </div>
-            </a>
-            {% empty %}
-            <p>No products available.</p>
-        {% endfor %}
-    </div>
-</section>
-
-<div id="product-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <img id="modal-image" src="" alt="Product Image">
-        <h3 id="modal-title"></h3>
-        <p id="modal-price"></p>
-        <p id="modal-desc"></p>
-    </div>
 </div>
+</a>
+{% endfor %}
+</div>
+</section>
+
+<section class="section">
+<h2>Featured</h2>
+<div class="slider-wrapper">
+<button class="slider-btn prev" id="prev">❮</button>
+<div class="slider" id="sliderContainer">
+{% for webinar in slider_webinars %}
+<a class="slide-link" href="{% url 'webinar_detail' webinar.id %}">
+<div class="slide-card">
+<img src="{{webinar.image.url}}">
+<h3>{{webinar.name}}</h3>
+<div class="price">${{webinar.price}}</div>
+<div class="seats">Seats left: {{webinar.stock}}</div>
+</div>
+</a>
+{% endfor %}
+</div>
+<button class="slider-btn next" id="next">❯</button>
+</div>
+</section>
+
+<section class="section">
+<h2>All Webinars</h2>
+<div class="grid">
+{% for webinar in webinars %}
+<a class="card-link" href="{% url 'webinar_detail' webinar.id %}">
+<div class="card">
+<img src="{{webinar.image.url}}">
+<h3>{{webinar.name}}</h3>
+<div class="price">${{webinar.price}}</div>
+<div class="seats">Seats left: {{webinar.stock}}</div>
+
+</div>
+</a>
+{% endfor %}
+</div>
+</section>
 {% endblock %}
-
-
 {% block extra_js %}
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const specialProducts = [
-            {
-                title: "Nebula Speaker",
-                price: "$199",
-                description: "Our Nebula Speaker offers high-fidelity sound and immersive audio experience with deep bass and crystal-clear highs.",
-                image: "https://picsum.photos/seed/p1/800/600"
-            },
-            {
-                title: "Nova Drone",
-                price: "$349",
-                description: "The Nova Drone features a 4K camera and advanced stabilization for stunning aerial photography and videography.",
-                image: "https://picsum.photos/seed/p2/800/600"
-            },
-            {
-                title: "Eclipse Watch",
-                price: "$129",
-                description: "Keep track of time in style with the Eclipse Watch, offering a sleek design and long-lasting battery life.",
-                image: "https://picsum.photos/seed/p3/800/600"
-            }
-        ];
+<script>
+const slider=document.getElementById("sliderContainer")
+const next=document.getElementById("next")
+const prev=document.getElementById("prev")
 
-        const modal = document.getElementById('product-modal');
-        const modalImage = document.getElementById('modal-image');
-        const modalTitle = document.getElementById('modal-title');
-        const modalPrice = document.getElementById('modal-price');
-        const modalDesc = document.getElementById('modal-desc');
-        const closeBtn = document.querySelector('.close-btn');
+if(next && prev && slider){
+next.onclick=()=>{slider.scrollBy({left:280,behavior:"smooth"})}
+prev.onclick=()=>{slider.scrollBy({left:-280,behavior:"smooth"})}
 
-        let currentIndex = 0;
-        let modalInterval;
-
-        function showModalProduct(index) {
-            const prod = specialProducts[index];
-            modalImage.src = prod.image;
-            modalTitle.textContent = prod.title;
-            modalPrice.textContent = prod.price;
-            modalDesc.textContent = prod.description;
-        }
-
-
-        function closeModal() {
-            modal.style.display = 'none';
-            clearInterval(modalInterval);
-        }
-
-        // Add click event to special product cards
-        const specialCards = document.querySelectorAll('.product-card.special');
-        specialCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const index = parseInt(card.getAttribute('data-index'));
-                openModal(index);
-            });
-        });
-
-        // Close modal when clicking outside content or on close button
-        closeBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Sliding products navigation
-        const slider = document.querySelector('.product-slider');
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
-        const card = slider.querySelector('.product-card');
-        const cardStyle = getComputedStyle(card);
-        const cardWidth = card.offsetWidth + parseFloat(cardStyle.marginRight);
-
-        nextBtn.addEventListener('click', () => {
-            slider.scrollBy({left: cardWidth * 4, behavior: 'smooth'});
-        });
-
-        prevBtn.addEventListener('click', () => {
-            slider.scrollBy({left: -cardWidth * 4, behavior: 'smooth'});
-        });
-    });
+setInterval(()=>{
+slider.scrollBy({left:280,behavior:"smooth"})
+if(slider.scrollLeft + slider.clientWidth >= slider.scrollWidth){
+slider.scrollTo({left:0,behavior:"smooth"})
+}
+},4000)
+}
 </script>
 {% endblock %}
-
-

@@ -70,10 +70,10 @@ class Type(models.Model):
         verbose_name = 'type'
         verbose_name_plural = 'types'
 class Role_webinar(Enum):
-    PARTICIPANT = 'participant'
-    HOST = 'host'
-    SPEAKER = 'speaker'
-    HOST_SPEAKER = 'host_speaker'
+    PARTICIPANT = 'PARTICIPANT'
+    HOST = 'HOST'
+    SPEAKER = 'SPEAKER'
+    HOST_SPEAKER = 'HOST_SPEAKER'
     @classmethod
     def choices(cls):
         return [(key.value, key.name.capitalize()) for key in cls]
@@ -85,13 +85,11 @@ class Webinar_User(models.Model):
         choices=Role_webinar.choices(),
         default=Role_webinar.PARTICIPANT.value,
     )
-    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['user_id', 'webinar_id'], name='unique_webinar_user')
         ]
         db_table = 'webinar_user'
-        ordering = ['created_at']
         verbose_name = 'webinar_user'
         verbose_name_plural = 'webinar_users'
 class Banner_Advertising(models.Model):

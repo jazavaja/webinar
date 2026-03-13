@@ -1,184 +1,150 @@
 {% extends 'home.html' %}
 {% block title %}Webinar{% endblock %}
 {% block extra_css %}
+
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
     <link rel="stylesheet" href="{% static 'css/webinar_detail.css' %}">
 {% endblock %}
 {% block content %}
+    {% if role %}
+        {% if role.role == 'HOST' %}
+            <div class="container">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="product-layout">
+                    <input type="hidden" name="buy" value="no">
+                    <!-- IMAGE -->
+                    <button class="add-btn" type="submit" id="addBtn">Delete</button>
+                    <input type="hidden" name="delete" value="yep">
+                </div>
+            </form>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="buy" value="no">
+                <div class="product-image">
+                    <img src="{{ webinar.image.url }}" alt="product">
+                </div>
 
-<style>
-:root {
-    --bg: #020617;
-    --card: #020617;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --accent: #38bdf8;
-    --border: #1f2937;
-}
+                <!-- DETAILS -->
+                <div class="product-details">
+                    <label for="name">Name:</label>
+                        <input value="{{ webinar.name }}" class="product-title" name="name"></input>
+                        <label for="link">Link:</label>
+                        <input value="{{ webinar.link }}" class="product-title" name="link"></input>
+                        <label for="hosted_at">Hosted At:</label>
+                        <input value="{{ webinar.hosted_at }}" class="product-title" type="datetime-local"
+                               name="hosted_at"></input>
+                        <label for="ticket_expiration">Ticket Expiration:</label>
+                        <input value="{{ webinar.ticket_expiration }}" type="datetime-local" class="product-title"
+                               name="ticket_expiration"></input>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+                        <label for="ticket_expiration">price:</label>
+                        <input value="{{ webinar.price }}" class="product-title"
+                               name="price"></input>
 
-body{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg,#020617,#0f172a);
-    color: var(--text);
-}
+                        <label for="visibility">Visibility:</label>
+                        <select name="visibility" id="visibility">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
 
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:40px 20px;
-}
+                        <div class="stock">tickets left: {{ webinar.stock }}</div>
+                        <button class="add-btn" id="addBtn" type="submit">submit</button>
 
-/* PRODUCT LAYOUT */
-.product-layout{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:40px;
-    align-items:start;
-}
+                    </div>
 
-/* IMAGE AREA */
-.product-image{
-    width:100%;
-    height:420px;
-    border-radius:16px;
-    overflow:hidden;
-    border:1px solid var(--border);
-}
 
-.product-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
 
-/* DETAILS */
-.product-details{
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-}
-
-.product-title{
-    font-size:2rem;
-    font-weight:700;
-}
-
-.product-price{
-    font-size:1.6rem;
-    color:var(--accent);
-    font-weight:700;
-}
-
-.stock{
-    font-size:1rem;
-    color:var(--muted);
-}
-
-/* QUANTITY */
-.quantity-row{
-    display:flex;
-    gap:10px;
-    align-items:center;
-}
-
-.quantity-row input{
-    width:70px;
-    padding:8px;
-    border-radius:8px;
-    border:none;
-    font-size:1rem;
-}
-
-.add-btn{
-    padding:14px 18px;
-    border-radius:10px;
-    border:none;
-    background:var(--accent);
-    font-size:1rem;
-    font-weight:700;
-    cursor:pointer;
-}
-
-/* DESCRIPTION AREA */
-.description-section{
-    margin-top:40px;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:25px;
-}
-
-.description-title{
-    font-size:1.4rem;
-    margin-bottom:12px;
-}
-
-.description-content{
-    font-size:1rem;
-    line-height:1.7;
-    color:var(--muted);
-    min-height:200px; /* good room but not huge */
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-    .product-layout{
-        grid-template-columns:1fr;
-    }
-
-    .product-image{
-        height:320px;
-    }
-}
-</style>
-
-<div class="container">
-
-    <div class="product-layout">
-
-        <!-- IMAGE -->
-        <div class="product-image">
-            <img src="{{ webinar.image.url }}" alt="product">
+                <!-- DESCRIPTION -->
+                <div class="description-section">
+                    <div class="description-title">Description</div>
+                    <input value='{{ webinar.description }}' class="description-content" name="description"></input>
+                </div>
+            </form>
         </div>
+        {% elif role.role == 'PARTICIPANT' %}
+            <div class="container">
+                <div class="product-layout">
 
-        <!-- DETAILS -->
-        <div class="product-details">
+                <!-- IMAGE -->
+                    <div class="product-image">
+                        <img src="{{ webinar.image.url }}" alt="product">
+                    </div>
 
-            <div class="product-title">{{ webinar.name }}</div>
+                <!-- DETAILS -->
+                    <div class="product-details">
+                        <div class="product-title">{{ webinar.name }}</div>
+                        <h1 class="info-label">LINK</h1>
+                        <div class="product-title">{{ webinar.link }}</div>
+                        <h1 class="info-label">HOSTED AT</h1>
+                        <div class="product-title">{{ webinar.hosted_at }}</div>
+                        <h1 class="info-label">TICKET EXPIRATION</h1>
+                        <div class="product-title">{{ webinar.ticket_expiration }}</div>
 
-            <div class="product-price">${{ webinar.price }}</div>
+                        <div class="product-price">${{ webinar.price }}</div>
 
-            <div class="stock">tickets left: {{ webinar.stock }}</div>
-            <button class="add-btn" id="addBtn">buy ticket</button>
+                        <div class="stock">tickets left: {{ webinar.stock }}</div>
+
+                    </div>
+
+                </div>
+
+
+
+            <!-- DESCRIPTION -->
+            <div class="description-section">
+                <div class="description-title">Description</div>
+                <div class="description-content">
+                    {{ webinar.description }}
+                </div>
+            </div>
 
         </div>
+            {% endif %}
+    {% else %}
+        <div class="container">
+            <div class="product-layout">
 
-    </div>
+                <!-- IMAGE -->
+                <div class="product-image">
+                    <img src="{{ webinar.image.url }}" alt="product">
+                </div>
 
-    <!-- DESCRIPTION -->
-    <div class="description-section">
-        <div class="description-title">Description</div>
-        <div class="description-content">
-            {{ product.description }}
+                <!-- DETAILS -->
+                                    <form action="" method="POST">
+                        {% csrf_token %}
+                                        <input type="hidden" name="buy" value="yes">
+                <div class="product-details">
+
+                    <div class="product-title">{{ webinar.name }}</div>
+{#                    <div class="product-title">{{ webinar.link }}</div>#}
+                    <h1 class="info-label">HOSTED AT</h1>
+                    <div class="product-title">{{ webinar.hosted_at }}</div>
+                    <h1 class="info-label">TICKET EXPIRATION</h1>
+                    <div class="product-title">{{ webinar.ticket_expiration }}</div>
+
+                    <div class="product-price">${{ webinar.price }}</div>
+
+                    <div class="stock">tickets left: {{ webinar.stock }}</div>
+
+                        <button class="add-btn" id="addBtn" type="submit">buy ticket</button>
+
+                </div>
+                </form>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="description-section">
+                <div class="description-title">Description</div>
+                <div class="description-content">
+                    {{ webinar.description }}
+                </div>
+            </div>
+
         </div>
-    </div>
-
-</div>
-
-<script>
-const btn = document.getElementById("addBtn");
-btn.addEventListener("click",()=>{
-    btn.innerText = "Added ✔";
-    setTimeout(()=>{
-        btn.innerText = "Add To Cart";
-    },1000);
-});
-</script>
+    {% endif %}
 
 
 {% endblock %}

@@ -6,7 +6,19 @@
     --accent: #38bdf8;
     --border: #1f2937;
 }
+.ulti-nav-container {
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 1.2rem 1.5rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
 
+.ulti-logo {
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+}
 * {
     text-decoration: none !important;
     box-sizing: border-box;
@@ -26,27 +38,18 @@ body {
 
 /* Sticky Navbar */
 header {
+    background: #0a0f1c;
     position: sticky;
     top: 0;
+    padding: 16px 40px;
+    display: flex;
     z-index: 1000;
-    background: rgba(2, 6, 23, 0.9);
-    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    /*backdrop-filter: blur(10px);*/
     border-bottom: 1px solid var(--border);
 }
 
-.nav-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 1.2rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.logo {
-    font-size: 1.3rem;
-    font-weight: 700;
-}
 
 nav a {
     color: var(--muted);
