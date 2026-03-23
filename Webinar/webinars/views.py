@@ -21,9 +21,18 @@ def webinar_detail(request, id):
     #     host_edit_webinar(request, id)
 
     if role:
-
-        return render(request, 'webinar-details.html',{'webinar':webinar,'role':role})
-    return render(request, 'webinar-details.html',{'webinar':webinar})
+        if request.session.get('user'):
+            print('lol')
+            return render(request, 'webinar-details.html',{'webinar':webinar,'role':role,'user':True})
+        else:
+            print('not lol')
+            return render(request, 'webinar-details.html',{'webinar':webinar,'role':role})
+    if request.session.get('user'):
+        print('lol')
+        return render(request, 'webinar-details.html',
+                      {'webinar': webinar, 'user': True})
+    else:
+        return render(request, 'webinar-details.html', {'webinar': webinar})
 def host_edit_webinar(request, id):
     webinar = Webinar.objects.get(id=id)
     if request.method == 'POST':

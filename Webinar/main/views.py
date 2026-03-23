@@ -3,7 +3,15 @@ from django.shortcuts import render, redirect
 from models.models import *
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    webinars = Webinar.objects.all()
+    special_webinars = []
+    for i in webinars:
+        type = Category_Webinar.objects.filter(webinar_id=i.id).first()
+        cat = Type.objects.filter(id=type.category_id).first()
+        if cat.name == 'Special':
+            print(i.name)
+            special_webinars.append(i)
+    return render(request, 'home.html', {'webinars':webinars, 'special_webinars':special_webinars})
 def contact(request):
     return render(request, 'contact-us.html')
 def about_us(request):

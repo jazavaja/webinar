@@ -1,17 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}{{ site_name }}{% endblock %}</title>
-    {% load static %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webinars</title>
+    {% block extra_css %}
+{% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-    {% block extra_css %}    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    {% endblock %}
 </head>
-<body>
 
+<body>
 <header>
     <div class="ulti-nav-container">
         <div class="ulti-logo">{{ webinar.title }}</div>
@@ -25,86 +26,71 @@
     </div>
 </header>
 {% block content %}
+<!-- HERO -->
 <section class="hero">
-    <div>
-        <h1>Webinars</h1>
-        <p>
-            Webinar events that you can sign up for or create your own webinars
-        </p>
-    </div>
-<!-- ================= IMAGE SLIDER (HOME PAGE) ================= -->
-<!-- Put this inside your homepage where you want the slider to appear -->
-<div class="home-slider">
-    <div class="slider-track" id="sliderTrack">
-        <div class="slide">
-            {% load static %}
-            <img src="{% static 'img/slider1.png' %}" alt="Slide 1">
-            <div class="slide-overlay"><h2>New Arrivals</h2></div>
-        </div>
-        <div class="slide">
-            {% load static %}
-            <img src="{% static 'img/slider2.png' %}" alt="Slide 2">
-            <div class="slide-overlay"><h2>Best Sellers</h2></div>
-        </div>
-        <div class="slide">
-            {% load static %}
-            <img src="{% static 'img/slider3.png' %}" alt="Slide 3">
-            <div class="slide-overlay"><h2>Limited Deals</h2></div>
-        </div>
-    </div>
-
-    <button class="slider-btn prev" onclick="prevSlide()">❮</button>
-    <button class="slider-btn next" onclick="nextSlide()">❯</button>
-
-    <div class="slider-dots" id="dots"></div>
-</div>
+    <h1>Webinars</h1>
+    <p>Join or create amazing webinar experiences.</p>
 </section>
 
+<!-- IMAGE SLIDER -->
+<div class="home-slider">
+    <div class="slider-track" id="sliderTrack">
+        <div class="slide"><img src="https://picsum.photos/1100/400?1"></div>
+        <div class="slide"><img src="https://picsum.photos/1100/400?2"></div>
+        <div class="slide"><img src="https://picsum.photos/1100/400?3"></div>
+    </div>
+</div>
+
+<!-- CARD SLIDER BELOW -->
+<div class="slider-wrapper">
+    <h2>Featured Webinars</h2>
+
+    <button class="slider-btn prev" id="prev">❮</button>
+
+    <div class="slider" id="slider">
+        {% for i in special_webinars %}
+        <div class="slide-card">
+            <img src="{{ i.image.url }}">
+            <h3>{{ i.name }}</h3>
+            <div class="price">${{ i.price }}</div>
+            <div class="seats">Seats left: {{ i.stock }}</div>
+        </div>
+        {% empty %}
+        <div class="slide-card">
+            <h3>No featured webinars available</h3>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button class="slider-btn next" id="next">❯</button>
+</div>
 {% endblock %}
 <footer>
-    <p>© 2026 Webinar.</p>
+    © 2026 Webinar
 </footer>
+{% block extra_js %}
 <script>
+// IMAGE SLIDER
 let index = 0;
 const track = document.getElementById("sliderTrack");
 const slides = document.querySelectorAll(".slide");
-const dotsContainer = document.getElementById("dots");
 
-// Create dots
-slides.forEach((_, i) => {
-    const dot = document.createElement("div");
-    dot.classList.add("dot");
-    dot.onclick = () => goToSlide(i);
-    dotsContainer.appendChild(dot);
-});
-const dots = document.querySelectorAll(".dot");
-
-function updateSlider(){
-    track.style.transform = `translateX(-${index * 100}%)`;
-    dots.forEach(d => d.classList.remove("active"));
-    dots[index].classList.add("active");
-}
-
-function nextSlide(){
+setInterval(() => {
     index = (index + 1) % slides.length;
-    updateSlider();
-}
+    track.style.transform = `translateX(-${index * 100}%)`;
+}, 4000);
 
-function prevSlide(){
-    index = (index - 1 + slides.length) % slides.length;
-    updateSlider();
-}
+// CARD SLIDER
+const slider = document.getElementById("slider");
 
-function goToSlide(i){
-    index = i;
-    updateSlider();
-}
+document.getElementById("next").onclick = () => {
+    slider.scrollBy({ left: 300, behavior: "smooth" });
+};
 
-// Auto slide every 5 seconds
-setInterval(nextSlide, 5000);
-updateSlider();
+document.getElementById("prev").onclick = () => {
+    slider.scrollBy({ left: -300, behavior: "smooth" });
+};
 </script>
-{% block extra_js %}
 {% endblock %}
 </body>
 </html>

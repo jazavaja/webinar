@@ -128,8 +128,15 @@
                     <div class="product-price">${{ webinar.price }}</div>
 
                     <div class="stock">tickets left: {{ webinar.stock }}</div>
-
+                    {% if webinar.stock > 0 %}
+                        {% if logged %}
                         <button class="add-btn" id="addBtn" type="submit">buy ticket</button>
+                        {% else %}
+                        <button class="add-btn" id="addBtn" disabled>login first</button>
+                        {% endif %}
+                    {% else %}
+                        <button class="add-btn" id="addBtn" disabled>out of tickets</button>
+                    {% endif %}
 
                 </div>
                 </form>

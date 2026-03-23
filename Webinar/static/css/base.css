@@ -14,29 +14,16 @@
     justify-content: space-between !important;
     align-items: center !important;
 }
-
-.ulti-logo {
-    font-size: 1.3rem !important;
-    font-weight: 700 !important;
-}
-* {
+a {
     text-decoration: none !important;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-a{
-    text-decoration: none !important;
-    color: var(--text);
 }
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #020617, #0f172a);
-    color: var(--text);
-    line-height: 1.6;
+    margin: 0;
+    font-family: Arial;
+    background: #0b1220;
+    color: #e6ecff
 }
 
-/* Sticky Navbar */
 header {
     background: #0a0f1c;
     position: sticky;
@@ -49,7 +36,93 @@ header {
     border-bottom: 1px solid var(--border);
 }
 
+.section {
+    padding: 40px
+}
 
+.section h2 {
+    color: #8fb3ff;
+    margin-bottom: 20px
+}
+
+.grid {
+    display: grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px
+}
+
+
+
+.price {
+    color: #7cffb6;
+    font-weight: bold
+}
+
+.seats {
+    font-size: 13px;
+    color: #9bb3ff
+}
+
+/* Slider container */
+
+.slider-wrapper{
+    position:relative;
+    padding:0 60px; /* space for buttons so they never cover cards */
+}
+.slider{
+    display:flex;
+    gap:20px;
+    overflow:hidden;
+    scroll-behavior:smooth;
+}
+.slide-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .4)
+}
+h3 {
+    color: white;
+}
+.slide-card{
+    min-width:260px;
+    background:#121d38;
+    padding:15px;
+    border-radius:12px;
+    transition: .25s;
+    border:1px solid #1f2e55;
+}
+.slide-card img{
+    width:100%;
+    border-radius:8px;
+    margin-bottom:10px;
+}
+
+/* Slider buttons */
+.slider-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:#1b2a52;
+    border:none;
+    color:#fff;
+    font-size:20px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    z-index:2;
+    padding:0 !important;
+}
+.prev{
+    left:10px;
+}
+
+.next{
+    right:10px;
+}
+
+.next {
+    right: -10px
+}
 
 nav a {
     color: var(--muted);
@@ -65,7 +138,7 @@ nav a:hover {
 /* Hero */
 .hero {
     max-width: 1100px;
-    margin: 4rem auto 0;
+    /*margin: 4rem auto 0;*/
     padding: 0 1.5rem;
     display: grid;
     grid-template-columns: 1.2fr 1fr;
