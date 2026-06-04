@@ -43,12 +43,13 @@ def webinar(request):
         "webinars": current_page
     })
 
-# Backend all set Search and Filter
 def get_webinar_by_js(request):
     page = request.GET.get("page", 1)
     q = request.GET.get("q", "").strip()
     cats = request.GET.getlist("cats") 
     price = request.GET.get("price", "any")
+    
+    webinars = Webinar.objects.prefetch_related("category").order_by("name"
 
     webinars = Webinar.objects.prefetch_related("category").order_by("name")
 
