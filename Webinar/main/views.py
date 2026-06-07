@@ -9,10 +9,11 @@ def home(request):
     special_webinars = []
     for i in webinars:
         type = Category_Webinar.objects.filter(webinar_id=i.id).first()
-        cat = Type.objects.filter(id=type.category_id).first()
-        if cat.name == 'Special':
-            print(i.name)
-            special_webinars.append(i)
+        print(type)
+        # cat = Type.objects.filter(id=type.category_id).first()
+        # if cat.name == 'Special':
+        #     print(i.name)
+            # special_webinars.append(i)
     return render(request, 'index.html',
                   {'webinars': webinars, 'special_webinars': special_webinars, "user": request.user})
 
@@ -31,10 +32,10 @@ from django.http import JsonResponse
 
 def webinar(request):
     page = request.GET.get("page", 1)
-
+    # have to make it so only webinars with type == "public" show up not the private ones
     webinars = Webinar.objects.prefetch_related("category")
 
-    paginator = Paginator(webinars, 1)
+    paginator = Paginator(webinars, 2)
 
     current_page = paginator.get_page(page)
 
@@ -48,8 +49,7 @@ def get_webinar_by_js(request):
     q = request.GET.get("q", "").strip()
     cats = request.GET.getlist("cats") 
     price = request.GET.get("price", "any")
-    
-    webinars = Webinar.objects.prefetch_related("category").order_by("name"
+    # have to make it so only webinars with type == "public" show up not the private ones
 
     webinars = Webinar.objects.prefetch_related("category").order_by("name")
 
@@ -66,7 +66,7 @@ def get_webinar_by_js(request):
     elif price == "under50":
         webinars = webinars.filter(price__lt=50)
 
-    paginator = Paginator(webinars, 10)
+    paginator = Paginator(webinars, 2)
     current_page = paginator.get_page(page)
 
     data = []

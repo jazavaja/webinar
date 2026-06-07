@@ -1,0 +1,72 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}Admin — Roles{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/admin_home.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/admin_roles.css' %}" />
+{% endblock %}
+{% block content %}
+  <main class="wrap section adm-page">
+
+    {# ======================================================
+       BACK LINK — e.g. href="{% url 'admin_home' %}"
+       ====================================================== #}
+    <a class="adm-back" href="">← Admin home</a>
+
+    <div class="adm-panel-head">
+      <h2>Webinar <em>roles</em></h2>
+      <span class="mono small muted">{{ webinar_users|length }} ENTRIES</span>
+    </div>
+
+    <div class="adm-card adm-table-card">
+      <div class="adm-search-row">
+        <input class="adm-search" id="role-search" type="search" placeholder="Search by user or webinar…" />
+      </div>
+      <div class="adm-table-wrap">
+        <table class="adm-table" id="role-table">
+          <thead>
+            <tr><th>ID</th><th>User</th><th>Webinar</th><th>Current role</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for wu in webinar_users %}
+            <tr data-search="{{ wu.user }} {{ wu.webinar }}">
+              <td class="mono small">{{ wu.id }}</td>
+              <td>{{ wu.user }}</td>
+              <td class="muted small">{{ wu.webinar }}</td>
+              <td>
+                {% if wu.role == "HOST" %}<span class="badge-pill badge-primary">Host</span>
+                {% elif wu.role == "PARTICIPANT" %}<span class="badge-pill badge-green">Participant</span>
+                {% else %}<span class="badge-pill badge-muted">{{ wu.role }}</span>{% endif %}
+              </td>
+              <td>
+                <div class="adm-row-actions">
+                  {% if wu.role != "PARTICIPANT" %}
+                    {# ======================================================
+                       CHANGE ROLE TO PARTICIPANT
+                       e.g. action="{% url 'admin_set_participant' wu.id %}"
+                       Method: POST
+                       ====================================================== #}
+                    <form method="post" action=""
+                          data-confirm="Set {{ wu.user }} as PARTICIPANT for {{ wu.webinar }}?"
+                          style="display:inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="webinar_user_id" value="{{ wu.id }}" />
+                      <button class="btn btn-primary btn-xs" type="submit">→ Participant</button>
+                    </form>
+                  {% else %}
+                    <span class="muted small">Already participant</span>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/admin_roles.js' %}"></script>
+{% endblock %}

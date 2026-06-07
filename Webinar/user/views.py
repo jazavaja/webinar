@@ -44,15 +44,26 @@ def Logout(request):
     return redirect('home')
 def Account(request):
     if request.method == 'POST':
-        log = request.POST.get('logout')
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        password = request.POST.get('password')
         user = User.objects.get(id=request.user.id)
-        user.username = username
-        user.first_name = first_name
-        user.last_name = last_name
+        username = request.POST.get('username')
+        first_name = request.POST.get('firstname')
+        last_name = request.POST.get('lastname')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        gender = request.POST.get('gender')
+        birthday = request.POST.get('birthday')
+        if  username:
+            user.username = username
+        if  first_name:
+            user.first_name = first_name
+        if  last_name:
+            user.last_name = last_name
+        if  email:
+            user.email = email
+        if  gender:
+            user.gender = gender
+        if  birthday:
+            user.birthdate = birthday
         if password:
             user.set_password(password)
         user.save()
@@ -73,4 +84,10 @@ def Account(request):
             your_webinars.append(i)
         else:
             others_webinars.append(i)
-    return render(request, 'account.html',{'user':user,'your_webinars':your_webinars,'other_webinars':others_webinars})
+    print(others_webinars,your_webinars)
+    return render(request, 'account.html',{'user':user,'hosted':your_webinars,'joined':others_webinars})
+def delete_account(request):
+    user = User.objects.get(id=request.user.id)
+    logout(request)
+    user.delete()
+    return redirect("home")

@@ -4,6 +4,7 @@
   text-transform: uppercase; color: var(--muted-fg);
   display: inline-flex; align-items: center; gap: 8px;
   margin-bottom: 28px; transition: color .15s, transform .15s;
+  text-decoration: none;
 }
 .wd-back:hover { color: var(--primary); transform: translateX(-2px); }
 
@@ -15,12 +16,15 @@
 @media (min-width: 880px) {
   .wd-shell { grid-template-columns: 5fr 7fr; gap: 36px; align-items: start; }
 }
-
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: skyblue !important;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
 /* ---- hero image ---- */
 .wd-media {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
+  position: relative; border-radius: 24px; overflow: hidden;
   border: 1px solid var(--border);
   background: color-mix(in oklab, var(--card) 60%, transparent);
   aspect-ratio: 4 / 3;
@@ -45,17 +49,14 @@
 }
 .wd-media .badge i {
   width: 7px; height: 7px; border-radius: 999px;
-  background: var(--signal);
-  box-shadow: 0 0 12px var(--signal);
+  background: var(--signal); box-shadow: 0 0 12px var(--signal);
   animation: pulse 1.6s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 
 /* ---- content card ---- */
 .wd-card {
-  padding: 32px;
-  border: 1px solid var(--border);
-  border-radius: 24px;
+  padding: 32px; border: 1px solid var(--border); border-radius: 24px;
   background: color-mix(in oklab, var(--card) 60%, transparent);
   backdrop-filter: blur(10px);
   display: flex; flex-direction: column; gap: 24px;
@@ -72,7 +73,7 @@
   max-width: 56ch;
 }
 
-/* ---- micro-label rows ---- */
+/* ---- data rows ---- */
 .wd-rows {
   display: flex; flex-direction: column;
   border-top: 1px solid var(--border);
@@ -88,14 +89,12 @@
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .22em;
   text-transform: uppercase; color: var(--muted-fg); margin: 0;
 }
-.wd-row dd {
-  margin: 0; font-size: 15px; color: var(--foreground);
-}
+.wd-row dd { margin: 0; font-size: 15px; color: var(--foreground); }
 .wd-row dd .mono { font-family: var(--font-mono); font-size: 13px; }
 .wd-row .seats-num { color: var(--signal); font-family: var(--font-mono); }
 .wd-row .price-free { color: var(--signal); }
 
-/* ---- join link block ---- */
+/* ---- join link ---- */
 .wd-join {
   display: flex; align-items: center; gap: 10px;
   padding: 14px 16px; border-radius: 14px;
@@ -104,7 +103,7 @@
 }
 .wd-join.locked {
   color: var(--muted-fg); font-style: italic;
-  font-family: var(--font-sans); font-size: 14px;
+  font-size: 14px;
 }
 .wd-join a {
   flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -124,47 +123,290 @@
   display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
   padding-top: 4px;
 }
-.btn { padding: 12px 22px; font-size: 14px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+  padding: 12px 22px; border-radius: 999px;
+  border: 1px solid transparent; cursor: pointer; text-decoration: none;
+  transition: transform .18s ease, box-shadow .2s ease, background .2s ease,
+              border-color .2s ease, color .18s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: scale(.98); }
 .btn-primary {
-  background: var(--primary); color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--primary),
+    color-mix(in oklab, var(--primary) 75%, var(--signal)));
+  color: var(--primary-foreground);
+  box-shadow: 0 10px 28px -12px color-mix(in oklab, var(--primary) 70%, transparent),
+              inset 0 1px 0 color-mix(in oklab, #fff 25%, transparent);
+}
+.btn-primary:hover {
+  box-shadow: 0 16px 36px -14px color-mix(in oklab, var(--primary) 80%, transparent),
+              inset 0 1px 0 color-mix(in oklab, #fff 32%, transparent);
 }
 .btn-ghost {
-  background: transparent; color: var(--foreground);
-  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 50%, transparent);
+  color: var(--foreground); border-color: var(--border);
+  backdrop-filter: blur(8px);
 }
-.btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
-.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-ghost:hover {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 25%, var(--border));
+}
+.btn-danger {
+  color: #ff8a7a;
+  border-color: color-mix(in oklab, #ff8a7a 28%, transparent);
+  background: color-mix(in oklab, #ff8a7a 8%, transparent);
+}
+.btn-danger:hover {
+  background: color-mix(in oklab, #ff8a7a 16%, transparent);
+  border-color: color-mix(in oklab, #ff8a7a 45%, transparent);
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
 .success-inline {
   display: inline-flex; align-items: center; gap: 8px;
   color: var(--signal); font-family: var(--font-mono); font-size: 13px;
   letter-spacing: .1em;
 }
 
-/* ---- edit form ---- */
-.field { display: flex; flex-direction: column; gap: 6px; }
+/* ---- form shared (edit + modal) ---- */
+.field { display: flex; flex-direction: column; gap: 8px; }
 .field label {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em;
   text-transform: uppercase; color: var(--muted-fg);
 }
-.field input, .field textarea {
-  background: var(--background); border: 1px solid var(--border); border-radius: 12px;
-  padding: 12px 14px; color: var(--foreground); font-family: inherit; font-size: 14px;
-  outline: none; transition: border-color .15s;
+.field input, .field textarea, .field select {
+  background: var(--background); border: 1px solid var(--border);
+  border-radius: 14px; padding: 13px 15px;
+  color: var(--foreground); font-family: inherit; font-size: 14px;
+  outline: none; transition: border-color .15s, box-shadow .15s;
 }
-.field input:focus, .field textarea:focus { border-color: var(--primary); }
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 22%, transparent);
+}
 .field textarea { resize: vertical; min-height: 100px; }
-.field-row { display: grid; gap: 12px; grid-template-columns: 1fr; }
+.field-row { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 560px) { .field-row { grid-template-columns: 1fr 1fr; } }
 
-/* ---- not found ---- */
+/* ---- edit form header ---- */
+.wd-form-head { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---- empty state ---- */
 .empty {
   text-align: center; padding: 80px 20px;
   border: 1px dashed var(--border); border-radius: 20px;
 }
 .empty h3 { font-size: 32px; margin-bottom: 8px; }
 
-/* ---- mobile sticky CTA ---- */
+/* ---- FAB (create button) ---- */
+.fab {
+  position: fixed; bottom: 32px; right: 32px; z-index: 200;
+  width: 56px; height: 56px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary),
+    color-mix(in oklab, var(--primary) 70%, var(--signal)));
+  color: var(--primary-foreground);
+  border: none; cursor: pointer;
+  font-size: 28px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px -8px color-mix(in oklab, var(--primary) 65%, transparent),
+              inset 0 1px 0 color-mix(in oklab, #fff 28%, transparent);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.fab:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 14px 36px -10px color-mix(in oklab, var(--primary) 75%, transparent);
+}
+.fab:active { transform: scale(.96); }
+
+/* ---- modal overlay ---- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: color-mix(in oklab, #000 55%, transparent);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.modal-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+
+/* ---- modal box ---- */
+.modal-box {
+  width: 100%; max-width: 600px; max-height: 90vh;
+  overflow-y: auto;
+  background: color-mix(in oklab, var(--card) 80%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; gap: 24px;
+  padding: 32px;
+  transform: translateY(16px) scale(.98);
+  transition: transform .25s ease;
+  box-shadow: 0 40px 100px -30px color-mix(in oklab, #000 60%, transparent),
+              0 0 0 1px color-mix(in oklab, var(--primary) 12%, transparent) inset;
+}
+.modal-overlay.open .modal-box {
+  transform: translateY(0) scale(1);
+}
+
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.modal-head h2 {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(24px, 3vw, 34px); margin: 0;
+}
+.modal-close {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  border: 1px solid var(--border); border-radius: 999px;
+  color: var(--muted-fg); font-size: 14px;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: color .15s, background .15s;
+}
+.modal-close:hover {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--foreground) 14%, transparent);
+}
+
+.modal-form { display: flex; flex-direction: column; gap: 16px; }
+
+.modal-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+/* ---- mobile ---- */
 @media (max-width: 559px) {
   .wd-card { padding: 24px; }
   .wd-row { grid-template-columns: 90px 1fr; }
+  .fab { bottom: 20px; right: 20px; }
+  .modal-box { padding: 24px; }
+}
+
+/* ================================================================
+   CUSTOM MULTI-SELECT  —  paste into webinar.css AND webinar_create.css
+   ================================================================ */
+
+.cat-select {
+  position: relative;
+}
+
+/* trigger box — looks like a normal input */
+.cat-select-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 48px; padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+  user-select: none;
+}
+.cat-select-trigger:focus,
+.cat-select.open .cat-select-trigger {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 22%, transparent);
+  outline: none;
+}
+
+/* tags area */
+.cat-select-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; flex: 1;
+}
+.cat-select-placeholder {
+  font-size: 14px; color: var(--muted-fg);
+}
+.cat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+  padding: 4px 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 16%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 28%, transparent);
+  color: var(--primary);
+  animation: tagPop .15s ease both;
+}
+@keyframes tagPop {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.cat-tag-remove {
+  cursor: pointer; font-size: 13px; line-height: 1;
+  color: color-mix(in oklab, var(--primary) 70%, transparent);
+  transition: color .12s;
+}
+.cat-tag-remove:hover { color: var(--primary); }
+
+/* chevron */
+.cat-select-chevron {
+  font-size: 12px; color: var(--muted-fg); flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.cat-select.open .cat-select-chevron { transform: rotate(180deg); }
+
+/* dropdown */
+.cat-select-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 100;
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  border: 1px solid var(--border); border-radius: 16px;
+  backdrop-filter: blur(16px);
+  padding: 8px;
+  display: none;
+  flex-direction: column; gap: 2px;
+  max-height: 240px; overflow-y: auto;
+  box-shadow: 0 20px 50px -16px color-mix(in oklab, #000 45%, transparent),
+              0 0 0 1px color-mix(in oklab, var(--primary) 10%, transparent) inset;
+  animation: dropIn .18s ease both;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+.cat-select.open .cat-select-dropdown { display: flex; }
+
+/* scrollbar */
+.cat-select-dropdown::-webkit-scrollbar { width: 4px; }
+.cat-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+.cat-select-dropdown::-webkit-scrollbar-thumb {
+  background: var(--border); border-radius: 999px;
+}
+
+/* option row */
+.cat-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  transition: background .12s;
+}
+.cat-option:hover {
+  background: color-mix(in oklab, var(--foreground) 6%, transparent);
+}
+.cat-option input[type="checkbox"] { display: none; }
+
+/* custom checkbox */
+.cat-option-check {
+  width: 18px; height: 18px; border-radius: 6px; flex-shrink: 0;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s;
+}
+.cat-option input:checked ~ .cat-option-check {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.cat-option input:checked ~ .cat-option-check::after {
+  content: "✓"; font-size: 11px; color: var(--primary-foreground); font-weight: 700;
+}
+.cat-option-label {
+  font-size: 14px; color: var(--foreground);
+}
+.cat-option input:checked ~ .cat-option-label {
+  color: var(--primary); font-weight: 500;
 }

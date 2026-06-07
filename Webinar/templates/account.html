@@ -1,0 +1,197 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %} Account {% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/account.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/webinar.css' %}" />
+{% endblock %}
+{% block content %}
+  <section class="hero hero-compact">
+    <div class="orbit orbit-a"></div>
+    <div class="orbit orbit-b"></div>
+    <div class="wrap rise" style="padding:64px 24px 24px">
+      <div class="eyebrow"><span class="dot"></span>Your control room</div>
+      <h1 style="font-size:clamp(40px,6vw,84px);margin-top:16px;line-height:0.95">
+        Hey <em class="accent">{{ user.first_name|default:user.username }}.</em>
+      </h1>
+      <p class="lead">Manage your profile, review the rooms you've joined, and keep an eye on what you're hosting next.</p>
+    </div>
+  </section>
+
+  <main class="wrap section acc-shell">
+
+    <!-- Tabs -->
+    <div class="acc-tabs" role="tablist">
+      <button class="acc-tab active" data-tab="joined" role="tab">Joined</button>
+      <button class="acc-tab" data-tab="hosted" role="tab">Hosted</button>
+      <button class="acc-tab" data-tab="profile" role="tab">Profile</button>
+    </div>
+
+    <!-- JOINED -->
+    <section class="acc-panel active" id="tab-joined">
+      <div class="acc-panel-head">
+        <h2>Webinars you've <em>joined</em></h2>
+        <span class="mono small muted">{{ joined|length }} TICKETS</span>
+      </div>
+
+      {% if joined %}
+        <div class="cards">
+          {% for w in joined %}
+            <a class="w-card" href="{% url 'webinar_detail' w.id %}">
+              <div class="w-card-glow"></div>
+              <div class="w-top">
+                <span class="tag">{{ w.category|default:"Live" }}</span>
+                <span class="price {% if w.price == 0 %}free{% endif %}">
+                  {% if w.price == 0 %}Free{% else %}${{ w.price }}{% endif %}
+                </span>
+              </div>
+              <h3>{{ w.name }}</h3>
+              <p class="w-host">Hosted by {{ w.host }}</p>
+              <p class="w-blurb">{{ w.description|truncatechars:120 }}</p>
+              <div class="w-meta">
+                <span class="w-when">{{ w.ticket_expiration|date:'M d · H:i' }}</span>
+                <span class="seats">● TICKET LOCKED</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">
+          <h3>No seats reserved yet.</h3>
+          <p class="muted">Find a room worth showing up for.</p>
+          <p style="margin-top:18px">
+            <a class="btn btn-primary" href="{% url 'webinars' %}">Browse webinars →</a>
+          </p>
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- HOSTED -->
+    <section class="acc-panel" id="tab-hosted">
+      <div class="acc-panel-head">
+        <h2>Webinars you're <em>hosting</em></h2>
+        <span class="mono small muted">{{ hosted|length }} ROOMS</span>
+      </div>
+
+      {% if hosted %}
+        <div class="cards">
+            <button class="fab" id="fab-create" aria-label="Create webinar"
+                    title="Create a webinar"><a href="{% url "create_webinar" %}">+</a>
+            </button>
+          {% for w in hosted %}
+            <div class="w-card host-card">
+              <div class="w-card-glow"></div>
+              <div class="w-top">
+                <span class="tag host-tag">● HOST</span>
+                <span class="price {% if w.price == 0 %}free{% endif %}">
+                  {% if w.price == 0 %}Free{% else %}${{ w.price }}{% endif %}
+                </span>
+              </div>
+              <h3>{{ w.name }}</h3>
+              <p class="w-blurb">{{ w.description|truncatechars:120 }}</p>
+              <div class="host-stats">
+                <div><span class="mono small muted">STOCK</span><b>{{ w.stock }}</b></div>
+                <div><span class="mono small muted">EXPIRES</span><b>{{ w.ticket_expiration|date:'M d, H:i' }}</b></div>
+              </div>
+              <div class="w-meta" style="gap:8px">
+                <a class="btn btn-ghost btn-sm" href="{% url 'webinar_detail' w.id %}">View</a>
+                <a class="btn btn-primary btn-sm" href="{% url 'webinar_detail' w.id %}?edit=1">Edit →</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">
+          <h3>You haven't hosted a room yet.</h3>
+          <p class="muted">Start broadcasting something worth blocking the calendar for.</p>
+          <p style="margin-top:18px">
+            <a class="btn btn-primary" href="#">Create a webinar →</a>
+          </p>
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- PROFILE -->
+    <section class="acc-panel" id="tab-profile">
+      <div class="acc-panel-head">
+        <h2>Your <em>profile</em></h2>
+        <span class="mono small muted">EDIT DETAILS</span>
+      </div>
+
+      <form class="acc-card" id="profileForm" method="POST" action="">
+        {% csrf_token %}
+
+        {% if saved %}
+          <div class="success-banner show"><i></i><span>Saved — your profile is up to date.</span></div>
+        {% endif %}
+
+        <div class="field-row">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstname" type="text" value="{{ user.first_name }}" required />
+          </div>
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastname" type="text" value="{{ user.last_name }}" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" value="{{ user.username }}" required />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="{{ user.email }}" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="birthday">Birthday</label>
+            <input id="birthday" name="birthday" type="date" value="{{ user.birthdate|date:'Y-m-d' }}" />
+          </div>
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+              <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
+              <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
+            </select>
+          </div>
+        </div>
+
+        <details class="danger-zone">
+          <summary>Change password</summary>
+          <div class="field">
+            <label for="currentPwd">Current password</label>
+            <input id="currentPwd" name="current_password" type="password" placeholder="••••••••" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newPwd">New password</label>
+              <input id="newPwd" name="new_password" type="password" placeholder="••••••••" />
+            </div>
+            <div class="field">
+              <label for="confirmPwd">Confirm</label>
+              <input id="confirmPwd" name="confirm_password"  type="password" placeholder="••••••••" />
+            </div>
+          </div>
+        </details>
+
+        <div class="error-text" id="profileError" aria-live="polite">
+          {% if error %}{{ error }}{% endif %}
+        </div>
+
+        <div class="acc-actions">
+          <a class="btn btn-ghost btn-md" href="{% url 'logout' %}">Log out</a>
+          <a class="btn btn-ghost btn-md" id="delete" href="{% url "delete" %}">Delete Account</a>
+          <button class="btn btn-primary btn-md" type="submit">Save changes →</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/account.js' %}"></script>
+{% endblock %}

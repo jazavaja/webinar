@@ -1,174 +1,132 @@
 (function () {
-  const root = document.getElementById("root");
-  let w = window.__WEBINAR__;
-  const role = (window.__ROLE__ || "").toUpperCase(); // "" | "PARTICIPANT" | "HOST"
 
-  if (!w) {
-    root.innerHTML = `
-      <div class="empty">
-        <h3>Webinar not found.</h3>
-        <p class="muted">It may have ended or been moved.</p>
-        <p style="margin-top:18px"><a class="btn btn-primary" href="{% url "webinars" %}}">Browse all webinars →</a></p>
-      </div>`;
-    return;
+  // ================================================================
+  //  SHARED: custom multi-select
+  // ================================================================
+  function initCatSelect(selectId, hiddenId, previewId, preselected) {
+    const wrap    = document.getElementById(selectId);
+    const hidden  = document.getElementById(hiddenId);
+    const preview = previewId ? document.getElementById(previewId) : null;
+    if (!wrap || !hidden) return;
+
+    const trigger    = wrap.querySelector(".cat-select-trigger");
+    const dropdown   = wrap.querySelector(".cat-select-dropdown");
+    const tagsEl     = wrap.querySelector(".cat-select-tags");
+    const checkboxes = [...wrap.querySelectorAll(".cat-option input[type='checkbox']")];
+
+    // pre-select from existing value or checked state in HTML
+    const ids = (preselected || "").split(",").map(s => s.trim()).filter(Boolean);
+    checkboxes.forEach(cb => {
+      if (ids.includes(String(cb.value).trim())) cb.checked = true;
+    });
+
+    function syncTags() {
+      const selected = checkboxes.filter(cb => cb.checked);
+      hidden.value   = selected.map(cb => cb.value).join(",");
+
+      tagsEl.innerHTML = "";
+      if (selected.length === 0) {
+        tagsEl.innerHTML = '<span class="cat-select-placeholder">Select categories…</span>';
+      } else {
+        selected.forEach(cb => {
+          const tag = document.createElement("span");
+          tag.className = "cat-tag";
+          tag.innerHTML = `${cb.dataset.name}<span class="cat-tag-remove" data-val="${cb.value}">×</span>`;
+          tagsEl.appendChild(tag);
+        });
+      }
+
+      if (preview) {
+        preview.textContent = selected.length ? selected[0].dataset.name : "Live";
+      }
+    }
+
+    function open()  { wrap.classList.add("open"); }
+    function close() { wrap.classList.remove("open"); }
+    function toggle(){ wrap.classList.contains("open") ? close() : open(); }
+
+    trigger.addEventListener("click", toggle);
+    trigger.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+      if (e.key === "Escape") close();
+    });
+    document.addEventListener("click", e => { if (!wrap.contains(e.target)) close(); });
+    dropdown.addEventListener("change", syncTags);
+    tagsEl.addEventListener("click", e => {
+      const btn = e.target.closest(".cat-tag-remove");
+      if (!btn) return;
+      const cb = checkboxes.find(c => String(c.value) === String(btn.dataset.val));
+      if (cb) { cb.checked = false; syncTags(); }
+    });
+
+    syncTags();
   }
 
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[c]));
-  const attr = (s) => String(s ?? "").replace(/"/g, "&quot;");
-
-  function fmtDate(iso) {
-    if (!iso) return "—";
-    const d = new Date(iso);
-    if (isNaN(d)) return esc(iso);
-    return d.toLocaleString(undefined, {
-      weekday: "short", day: "numeric", month: "short",
-      hour: "2-digit", minute: "2-digit"
+  // ---- copy join link ----
+  const copyBtn = document.getElementById("copy-btn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async function () {
+      const link = this.closest(".wd-join")?.querySelector("a")?.href || "";
+      try {
+        await navigator.clipboard.writeText(link);
+        const prev = this.textContent;
+        this.textContent = "Copied";
+        setTimeout(() => (this.textContent = prev), 1400);
+      } catch (e) { this.textContent = "Failed"; }
     });
   }
 
-  function render() {
-    document.title = `${w.title} — Signal.live`;
-    const canSeeLink = role === "HOST" || role === "PARTICIPANT";
-    const priceTxt = Number(w.price) === 0
-      ? `<span class="price-free">Free</span>`
-      : `$${esc(w.price)}`;
-
-    const joinBlock = canSeeLink
-      ? `<div class="wd-join">
-           <a href="${attr(w.link)}" target="_blank" rel="noopener">${esc(w.link || "(no link set)")}</a>
-           <button class="wd-copy" id="copy-btn" type="button">Copy</button>
-         </div>`
-      : `<div class="wd-join locked" aria-live="polite">🔒 Reserve a seat to reveal the join link</div>`;
-
-    const actions =
-      role === "HOST"
-        ? `<button class="btn btn-primary" id="edit-btn" type="button">Edit webinar</button>
-           <button class="btn btn-ghost" id="delete-btn" type="button">Delete</button>`
-        : role === "PARTICIPANT"
-          ? `<span class="success-inline">✓ You're signed up</span>`
-          : (Number(w.stock) <= 0
-              ? `<button class="btn btn-primary" disabled>Sold out of tickets</button>`
-              : `<button class="btn btn-primary" id="signup-btn" type="button">Reserve a seat →</button>`);
-
-    root.innerHTML = `
-      <a class="wd-back" href="./webinars.html">← All webinars</a>
-
-      <div class="wd-shell">
-        <figure class="wd-media">
-          <span class="badge"><i></i>Live webinar</span>
-          <img src="${attr(w.image)}" alt="${attr(w.title)}" loading="eager" />
-        </figure>
-
-        <article class="wd-card">
-          <header class="wd-head">
-            ${role === "HOST"
-              ? `<span class="tag wd-host-tag" style="background: color-mix(in oklab, var(--primary) 28%, transparent)">You host this</span>`
-              : `<span class="tag wd-host-tag">Upcoming session</span>`}
-            <h1 class="wd-title">${esc(w.title)}</h1>
-            <p class="wd-lead">${esc(w.description)}</p>
-          </header>
-
-          <dl class="wd-rows">
-            <div class="wd-row"><dt>Host</dt><dd>${esc(w.hostName)}</dd></div>
-            <div class="wd-row"><dt>Expires</dt>
-              <dd><time class="mono" datetime="${attr(w.expiresAt)}">${fmtDate(w.expiresAt)}</time></dd>
-            </div>
-            <div class="wd-row"><dt>Seats left</dt>
-              <dd><span class="seats-num">${esc(w.stock)}</span></dd>
-            </div>
-            <div class="wd-row"><dt>Price</dt><dd>${priceTxt}</dd></div>
-            <div class="wd-row"><dt>Join link</dt><dd>${joinBlock}</dd></div>
-          </dl>
-
-          <div class="wd-actions">${actions}</div>
-        </article>
-      </div>`;
-
-    bind();
-  }
-
-  function bind() {
-    const $ = (id) => document.getElementById(id);
-    if ($("edit-btn")) $("edit-btn").onclick = renderEdit;
-    if ($("delete-btn")) $("delete-btn").onclick = () => {
-      if (confirm("Delete this webinar? This cannot be undone.")) {
-        // hook into your store / form post here
-        location.href = "./webinars.html";
-      }
-    };
-    if ($("signup-btn")) $("signup-btn").onclick = () => {
-      // hook into your reserve flow here
-      alert("Reserved! (wire this to your backend)");
-    };
-    if ($("copy-btn")) $("copy-btn").onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(w.link || "");
-        const b = $("copy-btn");
-        const prev = b.textContent;
-        b.textContent = "Copied";
-        setTimeout(() => (b.textContent = prev), 1400);
-      } catch {}
-    };
-  }
-
-  function renderEdit() {
-    root.innerHTML = `
-      <a class="wd-back" href="{% url "webinars" %}">← All webinars</a>
-      <form class="wd-card" id="edit-form" method="post" style="max-width:780px">
-        {% csrf_token %}
-        <input name="edit" value="yes">
-        <h2 class="wd-title" style="font-size:36px">Edit webinar</h2>
-
-        <div class="field"><label>Title</label>
-          <input name="title" value="${attr(w.title)}" required />
-        </div>
-        <div class="field"><label>Host name</label>
-          <input name="hostName" value="${attr(w.hostName)}" required />
-        </div>
-        <div class="field"><label>Description</label>
-          <textarea name="description" required>${esc(w.description)}</textarea>
-        </div>
-        <div class="field"><label>Image URL</label>
-          <input name="image" value="${attr(w.image)}" placeholder="https://..." />
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Ticket expiration</label>
-            <input name="expiresAt" type="datetime-local"
-              value="${attr((w.expiresAt || '').slice(0,16))}" />
-          </div>
-          <div class="field"><label>Tickets left</label>
-            <input name="stock" type="number" min="0" value="${attr(w.stock)}" />
-          </div>
-        </div>
-        <div class="field"><label>Hidden join link</label>
-          <input name="link" value="${attr(w.link || '')}" placeholder="https://..." />
-        </div>
-
-        <div class="wd-actions">
-          <button type="submit" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button>
-        </div>
-      </form>`;
-
-    document.getElementById("cancel-btn").onclick = render;
-    document.getElementById("edit-form").onsubmit = (e) => {
+  // ---- delete confirm ----
+  const deleteBtn = document.getElementById("delete-btn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", function (e) {
       e.preventDefault();
-      const fd = new FormData(e.target);
-      w = Object.assign({}, w, {
-        title: fd.get("title"),
-        hostName: fd.get("hostName"),
-        description: fd.get("description"),
-        image: fd.get("image"),
-        expiresAt: fd.get("expiresAt"),
-        stock: Number(fd.get("stock")) || 0,
-        link: fd.get("link"),
-      });
-      window.__WEBINAR__ = w;
-      render();
-    };
+      if (window.confirm("Delete this webinar? This cannot be undone.")) {
+        document.getElementById("delete-form").submit();
+      }
+    });
   }
 
-  render();
+  // ---- init edit page category select ----
+  const fCatHidden = document.getElementById("f-category");
+  if (fCatHidden) {
+    initCatSelect("f-cat-select", "f-category", null, fCatHidden.value);
+  }
+
+  // ---- edit modal open/close ----
+  const fab         = document.getElementById("fab-create");
+  const modal       = document.getElementById("create-modal");
+  const modalClose  = document.getElementById("modal-close");
+  const modalCancel = document.getElementById("modal-cancel");
+
+  if (fab && modal) {
+    let pickerReady = false;
+
+    function openModal() {
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+
+      if (!pickerReady) {
+        pickerReady = true;
+        const selectedRaw = modal.dataset.selected || "";
+        initCatSelect("m-cat-select", "m-category", null, selectedRaw);
+      }
+
+      modal.querySelector("input, textarea")?.focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    fab.addEventListener("click", openModal);
+    if (modalClose)  modalClose.addEventListener("click", closeModal);
+    if (modalCancel) modalCancel.addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    });
+  }
+
 })();

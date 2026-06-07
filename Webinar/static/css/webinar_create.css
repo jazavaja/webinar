@@ -1,0 +1,369 @@
+/* ---- back link ---- */
+.wc-back {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted-fg);
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 28px; text-decoration: none;
+  transition: color .15s, transform .15s;
+}
+.wc-back:hover { color: var(--primary); transform: translateX(-2px); }
+
+/* ---- two-column layout ---- */
+.wc-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "main" "side";
+  gap: 20px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .wc-shell {
+    grid-template-columns: 1fr 340px;
+    grid-template-areas: "main side";
+    gap: 28px;
+  }
+}
+
+.wc-main {
+  grid-area: main;
+  display: flex; flex-direction: column; gap: 20px;
+  /* needs position so z-index works */
+  position: relative;
+}
+.wc-side {
+  grid-area: side;
+  display: flex; flex-direction: column; gap: 16px;
+  position: sticky; top: 24px;
+  /* sit below the basics card dropdown */
+  z-index: 0;
+}
+
+/* ---- cards ---- */
+.wc-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  backdrop-filter: blur(10px);
+  display: flex; flex-direction: column; gap: 18px;
+  /* NO overflow:hidden — that clips the dropdown */
+  overflow: visible;
+  position: relative;
+}
+
+/* basics card sits above scheduling card so dropdown paints over it */
+.wc-main .wc-card:first-child { z-index: 2; }
+.wc-main .wc-card:last-child  { z-index: 1; }
+
+.wc-card-label {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted-fg);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---- fields ---- */
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field label {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--muted-fg);
+}
+.field input, .field textarea, .field select {
+  font-family: inherit; font-size: 15px; color: var(--foreground);
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 25%, transparent);
+}
+.field textarea { resize: vertical; min-height: 110px; }
+.field-hint {
+  font-size: 12px; color: var(--muted-fg); line-height: 1.4;
+}
+.field-row { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .field-row { grid-template-columns: 1fr 1fr; } }
+
+/* ---- price prefix input ---- */
+.input-prefix {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--border); border-radius: 14px;
+  background: var(--background);
+  overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input-prefix:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 25%, transparent);
+}
+.input-prefix span {
+  display: flex; align-items: center;
+  padding: 0 14px;
+  font-family: var(--font-mono); font-size: 14px;
+  color: var(--muted-fg);
+  border-right: 1px solid var(--border);
+  background: color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+.input-prefix input {
+  flex: 1; border: 0; border-radius: 0;
+  background: transparent; padding: 13px 14px;
+  outline: none; box-shadow: none !important;
+}
+
+/* ---- live preview card ---- */
+.wc-preview-card { gap: 14px; }
+
+.w-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px 18px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 40%, transparent);
+  overflow: hidden;
+}
+.w-card-glow {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(
+    ellipse 55% 35% at 12% 0%,
+    color-mix(in oklab, var(--primary) 10%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.w-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.tag {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+  padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 16%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 28%, transparent);
+  color: var(--primary);
+}
+.price {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+  padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 7%, transparent);
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+}
+.price.free {
+  background: color-mix(in oklab, var(--signal) 14%, transparent);
+  border-color: color-mix(in oklab, var(--signal) 28%, transparent);
+  color: var(--signal);
+}
+.w-card h3 {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 16px; line-height: 1.2;
+  color: var(--foreground); margin: 0;
+}
+.prev-placeholder { color: var(--muted-fg) !important; }
+.w-blurb { font-size: 13px; line-height: 1.55; color: var(--muted-fg); }
+.w-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.w-when {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.1em; color: var(--muted-fg);
+}
+.seats {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+  padding: 3px 9px; border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
+  color: var(--primary);
+}
+
+/* ---- submit card ---- */
+.wc-submit-card { gap: 14px; }
+.wc-submit-note { font-size: 13px; line-height: 1.55; color: var(--muted-fg); }
+.wc-actions { display: flex; flex-direction: column; gap: 10px; }
+
+/* ---- buttons ---- */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+  border-radius: 999px; border: 1px solid transparent;
+  cursor: pointer; text-decoration: none;
+  isolation: isolate; overflow: hidden;
+  transition: transform .18s ease, box-shadow .25s ease,
+              background .25s ease, color .2s ease, border-color .2s ease;
+}
+.btn::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%,
+    color-mix(in oklab, #fff 22%, transparent) 50%,
+    transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .6s ease;
+  pointer-events: none; z-index: 1;
+}
+.btn:hover::after { transform: translateX(120%); }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 35%, transparent);
+}
+.btn-md { padding: 14px 24px; }
+.btn-primary {
+  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--primary),
+    color-mix(in oklab, var(--primary) 75%, var(--signal, var(--primary))));
+  box-shadow:
+    0 10px 28px -12px color-mix(in oklab, var(--primary) 70%, transparent),
+    inset 0 1px 0 color-mix(in oklab, #fff 28%, transparent);
+}
+.btn-primary:hover {
+  box-shadow:
+    0 16px 36px -14px color-mix(in oklab, var(--primary) 80%, transparent),
+    inset 0 1px 0 color-mix(in oklab, #fff 35%, transparent);
+}
+.btn-ghost {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--card) 50%, transparent);
+  border-color: var(--border); backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 25%, var(--border));
+}
+.btn[disabled], .btn:disabled {
+  opacity: .55; cursor: not-allowed; transform: none; box-shadow: none;
+}
+.btn[disabled]::after { display: none; }
+
+/* ---- error / success banners ---- */
+.wc-error-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: 12px;
+  background: color-mix(in oklab, #ff8a7a 14%, transparent);
+  border: 1px solid color-mix(in oklab, #ff8a7a 35%, transparent);
+  color: var(--foreground); font-size: 14px;
+  grid-column: 1 / -1;
+}
+.wc-error-banner i {
+  width: 8px; height: 8px; border-radius: 999px; flex-shrink: 0;
+  background: #ff8a7a; box-shadow: 0 0 10px #ff8a7a;
+}
+.error-text { min-height: 18px; font-size: 13px; color: #ff8a7a; }
+
+/* ---- mobile ---- */
+@media (max-width: 559px) {
+  .wc-card { padding: 20px; }
+}
+
+/* ================================================================
+   CUSTOM MULTI-SELECT
+   ================================================================ */
+.cat-select { position: relative; }
+
+.cat-select-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 48px; padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+  user-select: none;
+}
+.cat-select-trigger:focus,
+.cat-select.open .cat-select-trigger {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 22%, transparent);
+  outline: none;
+}
+
+.cat-select-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; flex: 1;
+}
+.cat-select-placeholder { font-size: 14px; color: var(--muted-fg); }
+
+.cat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+  padding: 4px 10px; border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 16%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 28%, transparent);
+  color: var(--primary);
+  animation: tagPop .15s ease both;
+}
+@keyframes tagPop {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.cat-tag-remove {
+  cursor: pointer; font-size: 13px; line-height: 1;
+  color: color-mix(in oklab, var(--primary) 70%, transparent);
+  transition: color .12s;
+}
+.cat-tag-remove:hover { color: var(--primary); }
+
+.cat-select-chevron {
+  font-size: 12px; color: var(--muted-fg); flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.cat-select.open .cat-select-chevron { transform: rotate(180deg); }
+
+.cat-select-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  /* high z-index so it floats above every sibling card */
+  z-index: 9999;
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  border: 1px solid var(--border); border-radius: 16px;
+  backdrop-filter: blur(16px);
+  padding: 8px;
+  display: none; flex-direction: column; gap: 2px;
+  max-height: 240px; overflow-y: auto;
+  box-shadow: 0 20px 50px -16px color-mix(in oklab, #000 45%, transparent),
+              0 0 0 1px color-mix(in oklab, var(--primary) 10%, transparent) inset;
+  animation: dropIn .18s ease both;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+.cat-select.open .cat-select-dropdown { display: flex; }
+
+.cat-select-dropdown::-webkit-scrollbar { width: 4px; }
+.cat-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+.cat-select-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+.cat-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  transition: background .12s;
+}
+.cat-option:hover { background: color-mix(in oklab, var(--foreground) 6%, transparent); }
+.cat-option input[type="checkbox"] { display: none; }
+
+.cat-option-check {
+  width: 18px; height: 18px; border-radius: 6px; flex-shrink: 0;
+  border: 1.5px solid var(--border); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s;
+}
+.cat-option input:checked ~ .cat-option-check {
+  background: var(--primary); border-color: var(--primary);
+}
+.cat-option input:checked ~ .cat-option-check::after {
+  content: "✓"; font-size: 11px; color: var(--primary-foreground); font-weight: 700;
+}
+.cat-option-label { font-size: 14px; color: var(--foreground); }
+.cat-option input:checked ~ .cat-option-label { color: var(--primary); font-weight: 500; }

@@ -1,0 +1,89 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}Admin Panel{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/admin_home.css' %}" />
+{% endblock %}
+{% block content %}
+
+  <section class="hero hero-compact">
+    <div class="orbit orbit-a"></div>
+    <div class="orbit orbit-b"></div>
+    <div class="wrap rise" style="padding:64px 24px 24px">
+      <div class="eyebrow"><span class="dot"></span>Admin only</div>
+      <h1 style="font-size:clamp(40px,6vw,84px);margin-top:16px;line-height:0.95">
+        Control <em class="accent">panel.</em>
+      </h1>
+      <p class="lead">Select a section to manage.</p>
+    </div>
+  </section>
+
+  <main class="wrap section adm-home-shell">
+
+{#       DASHBOARD STATS — pass these from your view:#}
+{#       total_users, total_webinars, total_subscriptions, total_roles#}
+{#       ====================================================== #}
+    <div class="adm-stats">
+      <div class="adm-stat-card">
+        <span class="adm-stat-label">Users</span>
+        <span class="adm-stat-val">{{ total_users|default:"—" }}</span>
+      </div>
+      <div class="adm-stat-card">
+        <span class="adm-stat-label">Webinars</span>
+        <span class="adm-stat-val">{{ total_webinars|default:"—" }}</span>
+      </div>
+      <div class="adm-stat-card">
+        <span class="adm-stat-label">Subscriptions</span>
+        <span class="adm-stat-val">0</span>
+      </div>
+{#      <div class="adm-stat-card">#}
+{#        <span class="adm-stat-label">Role entries</span>#}
+{#        <span class="adm-stat-val">{{ total_roles|default:"—" }}</span>#}
+{#      </div>#}
+    </div>
+
+    <div class="adm-nav-grid">
+
+
+{#         USERS CARD — point href to your admin_users URL#}
+{#         e.g. href="{% url 'admin_users' %}"#}
+{#         ====================================================== #}
+      <a class="adm-nav-card" href="{% url "admin_users" %}">
+        <div class="adm-nav-icon">👤</div>
+        <div class="adm-nav-info">
+          <h3>Users</h3>
+          <p>Create, edit, and delete user accounts.</p>
+        </div>
+        <span class="adm-nav-arrow">→</span>
+      </a>
+
+{#         WEBINARS CARD — point href to your admin_webinars URL#}
+{#         e.g. href="{% url 'admin_webinars' %}"#}
+{#         ====================================================== #}
+      <a class="adm-nav-card" href="{% url "admin_webinars" %}">
+        <div class="adm-nav-icon">📡</div>
+        <div class="adm-nav-info">
+          <h3>Webinars</h3>
+          <p>Activate or deactivate webinar rooms.</p>
+        </div>
+        <span class="adm-nav-arrow">→</span>
+      </a>
+
+      <a class="adm-nav-card" href="#">
+        <div class="adm-nav-icon">💳</div>
+        <div class="adm-nav-info">
+          <h3>Subscriptions</h3>
+          <p>Activate or deactivate user subscriptions.</p>
+        </div>
+        <span class="adm-nav-arrow">→</span>
+      </a>
+
+
+
+    </div>
+  </main>
+
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/admin_home.js' %}"></script>
+{% endblock %}

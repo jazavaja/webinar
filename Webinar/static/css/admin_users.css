@@ -1,0 +1,2 @@
+/* admin_users.css — page-specific overrides */
+.adm-page { padding-top: 8px; display: flex; flex-direction: column; gap: 24px; }

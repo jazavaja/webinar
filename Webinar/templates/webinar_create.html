@@ -1,0 +1,159 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}Create Webinar{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/webinar_create.css' %}" />
+{% endblock %}
+{% block content %}
+
+  <section class="hero hero-compact">
+    <div class="orbit orbit-a"></div>
+    <div class="orbit orbit-b"></div>
+    <div class="wrap rise" style="padding:64px 24px 24px">
+      <div class="eyebrow"><span class="dot"></span>Host something worth showing up for</div>
+      <h1 style="font-size:clamp(40px,6vw,84px);margin-top:16px;line-height:0.95">
+        New <em class="accent">webinar.</em>
+      </h1>
+      <p class="lead">Fill in the details below and your room will be live instantly.</p>
+    </div>
+  </section>
+
+  <main class="wrap section">
+    <a class="wc-back" href="{% url 'webinars' %}">← All webinars</a>
+
+    <form class="wc-shell" id="createForm" method="post" action="{% url 'create_webinar' %}">
+      {% csrf_token %}
+
+      {% if error %}
+        <div class="wc-error-banner"><i></i><span>{{ error }}</span></div>
+      {% endif %}
+
+      <!-- LEFT: main details -->
+      <div class="wc-main">
+
+        <div class="wc-card">
+          <div class="wc-card-label">Basics</div>
+
+          <div class="field">
+            <label for="wc-title">Title</label>
+            <input id="wc-title" name="title" type="text"
+              value="{{ form.title.value|default:'' }}"
+              placeholder="e.g. Building design systems that scale"
+              required />
+            <span class="field-hint">Keep it clear and specific — this is what people see first.</span>
+          </div>
+
+          <div class="field">
+            <label for="wc-desc">Description</label>
+            <textarea id="wc-desc" name="description"
+              placeholder="What will attendees learn or take away?" required>{{ form.description.value|default:'' }}</textarea>
+          </div>
+
+          <!-- CATEGORY MULTI-SELECT -->
+          <div class="field">
+            <label>Category</label>
+
+
+            <div class="cat-select" id="wc-cat-select">
+              <div class="cat-select-trigger" id="wc-cat-trigger" tabindex="0">
+                <div class="cat-select-tags" id="wc-cat-tags">
+                  <span class="cat-select-placeholder">Select categories…</span>
+                </div>
+                <span class="cat-select-chevron">▾</span>
+              </div>
+              <div class="cat-select-dropdown" id="wc-cat-dropdown">
+                {% for item in categories %}
+                  <label class="cat-option">
+                    <input type="checkbox" value="{{ item.id }}" data-name="{{ item.name }}" />
+                    <span class="cat-option-check"></span>
+                    <span class="cat-option-label">{{ item.name }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            <!-- hidden input that submits comma-separated IDs -->
+            <input type="hidden" id="wc-category" name="category" value="{{ form.category.value|default:'' }}" />
+            <span class="field-hint">Pick one or more.</span>
+          </div>
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-card-label">Scheduling &amp; tickets</div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="wc-expires">Ticket expiration</label>
+              <input id="wc-expires" name="ticket_expiration" type="datetime-local"
+                value="{{ form.ticket_expiration.value|default:'' }}" required />
+              <span class="field-hint">When tickets stop being valid.</span>
+            </div>
+            <div class="field">
+              <label for="wc-stock">Tickets available</label>
+              <input id="wc-stock" name="stock" type="number" min="1"
+                value="{{ form.stock.value|default:'100' }}" required />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="wc-price">Price (USD)</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input id="wc-price" name="price" type="number" min="0" step="0.01"
+                  value="{{ form.price.value|default:'0' }}" placeholder="0" />
+              </div>
+              <span class="field-hint">Set to 0 for a free event.</span>
+            </div>
+            <div class="field">
+              <label for="wc-link">Hidden join link</label>
+              <input id="wc-link" name="link" type="url"
+                value="{{ form.link.value|default:'' }}"
+                placeholder="https://zoom.us/j/…" />
+              <span class="field-hint">Only visible to participants after sign-up.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: preview + submit -->
+      <aside class="wc-side">
+
+        <div class="wc-card wc-preview-card">
+          <div class="wc-card-label">Live preview</div>
+          <div class="w-card" id="preview-card">
+            <div class="w-card-glow"></div>
+            <div class="w-top">
+              <span class="tag" id="prev-category">Live</span>
+              <span class="price free" id="prev-price">Free</span>
+            </div>
+            <h3 id="prev-title" class="prev-placeholder">Your webinar title</h3>
+            <p class="w-blurb" id="prev-desc">Your description will appear here…</p>
+            <div class="w-meta">
+              <span class="w-when" id="prev-date">—</span>
+              <span class="seats">● Ticket locked</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wc-card wc-submit-card">
+          <div class="wc-card-label">Ready?</div>
+          <p class="wc-submit-note">Your webinar will be published immediately and visible to everyone.</p>
+          <div class="wc-actions">
+            <button class="btn btn-primary btn-md" type="submit" id="submit-btn">
+              Publish webinar →
+            </button>
+            <a class="btn btn-ghost btn-md" href="{% url 'webinars' %}">Cancel</a>
+          </div>
+          <div class="error-text" id="formError" aria-live="polite"></div>
+        </div>
+
+      </aside>
+
+    </form>
+  </main>
+
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/webinar_create.js' %}"></script>
+{% endblock %}
