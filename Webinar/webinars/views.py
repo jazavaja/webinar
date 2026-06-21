@@ -6,6 +6,11 @@ def delete_webinar(request,id):
     webinar.delete()
     return redirect("webinars")
 def webinar_detail(request, id):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
+
     if request.method == 'POST':
         w = Webinar.objects.get(id=id)
         w.stock -= 1
@@ -34,6 +39,10 @@ def webinar_detail(request, id):
         return render(request, 'webinar.html', {'w': webinar,"user":request.user,"categories":list(Category.objects.all()),
                                                 "selected_category":category,"host":host_name})
 def edit_webinar(request, id):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     webinar = Webinar.objects.get(id=id)
     if request.method == 'POST':
         webinar.name = request.POST.get('title')
@@ -56,7 +65,10 @@ def edit_webinar(request, id):
         return render(request, 'webinar.html',{'w':webinar,'role':role.role})
     # return render(request, 'host-edit-webinar.html',{'webinar':webinar})
 def add_webinar(request):
-
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     if request.method == 'POST':
 
         name = request.POST.get('title')

@@ -26,6 +26,16 @@ def signup(request):
         user.save()
         return redirect('login')
     return render(request, 'signup.html')
+def complete(request):
+    if request.method == 'POST':
+        gender = request.POST.get('gender')
+        birthday = request.POST.get('birthday')
+        user = User.objects.get(id=request.user.id)
+        user.birthdate = birthday
+        user.gender = gender
+        user.save()
+        return redirect('home')
+    return render(request, 'complete_profile.html')
 def Login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -43,6 +53,10 @@ def Logout(request):
     logout(request)
     return redirect('home')
 def Account(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     if request.method == 'POST':
         user = User.objects.get(id=request.user.id)
         username = request.POST.get('username')

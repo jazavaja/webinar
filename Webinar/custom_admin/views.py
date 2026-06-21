@@ -13,6 +13,10 @@ def delete_user(request, id):
     return redirect("admin_main")
 
 def user(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     if request.GET.get("load_js") == "1":
         qs = User.objects.order_by("id")
         page = request.GET.get("page", 1)
@@ -38,6 +42,10 @@ def user(request):
         })
     return render(request, "admin_users.html", {"users": User.objects.all()})
 def edit_user(request, id):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     user = User.objects.get(id=id)
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
@@ -63,6 +71,10 @@ def edit_user(request, id):
     user.save()
     return redirect("admin_main")
 def create_user(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
@@ -84,6 +96,10 @@ def create_user(request):
     return redirect("users")
 
 def main_admin(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     return render(request, "admin_home.html", {"users": User.objects.all(), "webinars": Webinar.objects.all(),
                                           "subscriptions": Monthly_Subscription.objects.all(),
                                           "webinar_users": Webinar_User.objects.all(),
@@ -91,6 +107,10 @@ def main_admin(request):
                                                "total_users":User.objects.count()})
 
 def webinar(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     if request.GET.get("load_js") == "1":
         qs = Webinar.objects.order_by("name")
         page = request.GET.get("page", 1)
@@ -128,6 +148,10 @@ def deactivate_webinar(request, id):
 
 
 def admin_sub(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        if user.birthdate is None or user.gender is None:
+            return redirect("complete")
     return redirect("admin_main")
     # if request.GET.get("load_js") == "1":
     #     qs = Monthly_Subscription.objects.select_related("user").order_by("id")

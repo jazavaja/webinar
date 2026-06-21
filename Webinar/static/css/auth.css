@@ -144,6 +144,13 @@ em { font-style: italic; color: var(--primary); }
 .auth-foot a { color: var(--primary); }
 .auth-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+.auth-divider { display: flex; align-items: center; gap: 14px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.btn-google { gap: 12px; background: var(--ink); border: 1px solid var(--border); color: var(--fg); }
+.btn-google:hover { border-color: var(--primary); color: var(--primary); }
+.btn-google svg { flex-shrink: 0; }
+
 .error-text { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--danger); min-height: 16px; }
 .success-banner {
   display: none;

@@ -19,7 +19,9 @@ from django.urls import path, include
 from webinars import urls
 from main import urls
 urlpatterns = [
+# path('admin/', admin.site.urls),
     path('admin/', include("custom_admin.urls")),
+    path("accounts/", include("allauth.urls")),
     path('',include('main.urls')),
     path('webinar/',include('webinars.urls')),
     path('account/',include('user.urls')),
