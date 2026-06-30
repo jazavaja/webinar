@@ -3,6 +3,14 @@ from django.shortcuts import render, redirect
 from models.models import *
 from webinars.forms import WebinarForm
 
+from rest_framework import viewsets
+from models.models import Webinar
+from .serializers import ProfileSerializer
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Webinar.objects.all()
+    serializer_class = ProfileSerializer
+
 
 # Create your views here.
 # DECORATOR MODEL DOWN THERE 👇
@@ -65,7 +73,7 @@ def edit_webinar(request, id):
     if request.method == 'POST':
         webinar.name = request.POST.get('title')
         webinar.description = request.POST.get('description')
-        # webinar.title_image = request.FILES['image']
+        webinar.title_image = request.FILES['title_image']
         webinar.hosted_at = request.POST.get('hosted_at')
         webinar.link = request.POST.get('link')
         webinar.ticket_expiration = request.POST.get('expiration')
@@ -93,19 +101,20 @@ def add_webinar(request):
         return redirect("home")
     if request.method == 'POST':
         form = WebinarForm(request.POST, request.FILES)
-        name = form.cleaned_data.get('name')
-        description = form.cleaned_data.get('description')
-        link = form.cleaned_data.get('link')
-        price = form.cleaned_data.get('price')
-        stock = form.cleaned_data.get('stock')
-        image = form.cleaned_data.get("title_image")
-        hosted_at = form.cleaned_data.get("hosted_at")
-        ticket_expiration = form.cleaned_data.get("ticket_expiration")
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        image = request.FILES['title_image']
+        hosted_at = request.POST.get('hosted_at')
+        link = request.POST.get('link')
+        ticket_expiration = request.POST.get('ticket_expiration')
+        price = request.POST.get('price')
+        stock = request.POST.get('stock')
         webinar = Webinar.objects.create(
-            name=name,
-            description=description,
+        name = name,
+        description=description,
             hosted_at=hosted_at,
             link=link,
+            title_image=image,
             ticket_expiration=ticket_expiration,
             price=price,
             stock=stock,

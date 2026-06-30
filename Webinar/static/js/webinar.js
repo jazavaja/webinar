@@ -62,6 +62,63 @@
     syncTags();
   }
 
+  // ================================================================
+  //  SHARED: image upload dropzone
+  //  prefix = id prefix, e.g. "f" -> #f-image-drop, #f-image, etc.
+  // ================================================================
+  function initImageDrop(prefix) {
+    const drop      = document.getElementById(`${prefix}-image-drop`);
+    const input     = document.getElementById(`${prefix}-image`);
+    const empty     = document.getElementById(`${prefix}-image-empty`);
+    const preview   = document.getElementById(`${prefix}-image-preview`);
+    const previewEl = document.getElementById(`${prefix}-image-preview-img`);
+    const removeBtn = document.getElementById(`${prefix}-image-remove`);
+    if (!drop || !input) return;
+
+    function showFile(file) {
+      if (!file || !file.type.startsWith("image/")) return;
+      const url = URL.createObjectURL(file);
+      previewEl.src = url;
+      empty.hidden   = true;
+      preview.hidden = false;
+    }
+
+    function clearFile() {
+      input.value = "";
+      previewEl.src = "";
+      empty.hidden   = false;
+      preview.hidden = true;
+    }
+
+    drop.addEventListener("click", (e) => {
+      if (e.target.closest(".wc-image-remove")) return;
+      input.click();
+    });
+    input.addEventListener("change", () => {
+      if (input.files && input.files[0]) showFile(input.files[0]);
+    });
+
+    if (removeBtn) {
+      removeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearFile();
+      });
+    }
+
+    ["dragenter", "dragover"].forEach(evt => {
+      drop.addEventListener(evt, (e) => { e.preventDefault(); drop.classList.add("drag-over"); });
+    });
+    ["dragleave", "drop"].forEach(evt => {
+      drop.addEventListener(evt, (e) => { e.preventDefault(); drop.classList.remove("drag-over"); });
+    });
+    drop.addEventListener("drop", (e) => {
+      const file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (!file) return;
+      input.files = e.dataTransfer.files;
+      showFile(file);
+    });
+  }
+
   // ---- copy join link ----
   const copyBtn = document.getElementById("copy-btn");
   if (copyBtn) {
@@ -91,6 +148,7 @@
   const fCatHidden = document.getElementById("f-category");
   if (fCatHidden) {
     initCatSelect("f-cat-select", "f-category", null, fCatHidden.value);
+    initImageDrop("f");
   }
 
   // ---- edit modal open/close ----
@@ -110,6 +168,7 @@
         pickerReady = true;
         const selectedRaw = modal.dataset.selected || "";
         initCatSelect("m-cat-select", "m-category", null, selectedRaw);
+        initImageDrop("m");
       }
 
       modal.querySelector("input, textarea")?.focus();

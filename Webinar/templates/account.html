@@ -38,6 +38,7 @@
         <div class="cards">
           {% for w in joined %}
             <a class="w-card" href="{% url 'webinar_detail' w.id %}">
+            <img src="{% if w.title_image %}{{ w.title_image.url }}{% else %}#{% endif %}" alt="{{ w.name }}" loading="eager"/>
               <div class="w-card-glow"></div>
               <div class="w-top">
                 <span class="tag">{{ w.category|default:"Live" }}</span>
@@ -83,6 +84,7 @@
               <div class="w-card-glow"></div>
               <div class="w-top">
                 <span class="tag host-tag">● HOST</span>
+              <img src="{% if w.title_image %}{{ w.title_image.url }}{% else %}#{% endif %}" alt="{{ w.name }}" loading="eager"/>
                 <span class="price {% if w.price == 0 %}free{% endif %}">
                   {% if w.price == 0 %}Free{% else %}${{ w.price }}{% endif %}
                 </span>

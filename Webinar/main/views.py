@@ -41,6 +41,7 @@ def about_us(request):
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 
+# views.py
 
 
 def get_webinar_by_js(request):
@@ -60,7 +61,7 @@ def get_webinar_by_js(request):
     webinars = Webinar.objects.prefetch_related("category").order_by("name")
     webinars = webinars.filter(type="public")
     if name_get_webinar:
-        webinars = webinars.filter(name__icontains=name_get_webinar)
+        webinars = webinars.filter(name__startswith=name_get_webinar)
 
     if cats and "All" not in cats:
         for i in cats:
